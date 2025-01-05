@@ -1,28 +1,17 @@
 {
     "version": 2,
     "buildCommand": "npm run build",
-    "outputDirectory": "public/build",
-    "functions": {
-        "api/index.php": {
-            "runtime": "vercel-php@0.4.0"
-        }
-    },
+    "outputDirectory": "public",
+    "framework": "vite",
     "routes": [
         {
-            "src": "/build/(.*)",
-            "dest": "/build/$1"
+            "src": "/assets/(.*)",
+            "headers": { "cache-control": "public, max-age=31536000, immutable" },
+            "dest": "/assets/$1"
         },
         {
             "src": "/(.*)",
-            "dest": "/api/index.php"
+            "dest": "/index.html"
         }
-    ],
-    "env": {
-        "APP_ENV": "production",
-        "APP_DEBUG": "false",
-        "APP_URL": "https://mort-zilla.vercel.app",
-        "CACHE_DRIVER": "array",
-        "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "array"
-    }
+    ]
 } 
