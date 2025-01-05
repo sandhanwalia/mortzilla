@@ -94,13 +94,13 @@
                   type="range" 
                   v-model="interestRate" 
                   min="2" 
-                  max="8" 
+                  max="14" 
                   step="0.125"
                   class="slider-input w-full"
                 />
                 <div class="flex justify-between text-xs text-gray-500 mt-1">
                   <span>2%</span>
-                  <span>8%</span>
+                  <span>14%</span>
                 </div>
               </div>
 

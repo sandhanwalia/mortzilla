@@ -16,7 +16,7 @@ A sophisticated mortgage calculator built with Laravel, Vue.js, and Tailwind CSS
 
 ## Demo
 
-[Live Demo](your-demo-link-here) <!-- Add your deployment link when available -->
+[Live Demo](https://mort-zilla.vercel.app) <!-- Will be available after deployment -->
 
 ## Tech Stack
 
@@ -38,7 +38,7 @@ Before you begin, ensure you have the following installed:
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/mort-zilla.git
+git clone https://github.com/sandhanwalia/mort-zilla.git
 cd mort-zilla
 ```
 
@@ -109,6 +109,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
+Sandhan Walia - [@sandhanwalia](https://github.com/sandhanwalia)
 
-Project Link: [https://github.com/yourusername/mort-zilla](https://github.com/yourusername/mort-zilla)
+Project Link: [https://github.com/sandhanwalia/mort-zilla](https://github.com/sandhanwalia/mort-zilla)
