@@ -26,7 +26,12 @@ export default defineConfig({
             output: {
                 manualChunks: {
                     vendor: ['vue', 'chart.js', 'jspdf', 'html2canvas']
-                }
+                },
+                assetFileNames: (assetInfo) => {
+                    return `assets/[name]-[hash][extname]`
+                },
+                chunkFileNames: 'assets/[name]-[hash].js',
+                entryFileNames: 'assets/[name]-[hash].js'
             }
         }
     }

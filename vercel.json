@@ -1,6 +1,7 @@
 {
     "version": 2,
-    "framework": "vite",
+    "buildCommand": "npm run build",
+    "outputDirectory": "public/build",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.4.0"
@@ -9,7 +10,7 @@
     "routes": [
         {
             "src": "/build/(.*)",
-            "dest": "/public/build/$1"
+            "dest": "/build/$1"
         },
         {
             "src": "/(.*)",
