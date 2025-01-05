@@ -18,15 +18,14 @@ export default defineConfig({
         }),
     ],
     build: {
-        outDir: 'public',
-        assetsDir: 'assets',
+        outDir: 'public/build',
+        assetsDir: '',
         manifest: true,
+        chunkSizeWarningLimit: 1600,
         rollupOptions: {
             output: {
-                manualChunks(id) {
-                    if (id.includes('node_modules')) {
-                        return 'vendor';
-                    }
+                manualChunks: {
+                    vendor: ['vue', 'chart.js', 'jspdf', 'html2canvas']
                 }
             }
         }
