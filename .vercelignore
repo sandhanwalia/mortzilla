@@ -3,8 +3,7 @@
 .env
 .env.*
 *.log
-.git
-.gitignore
+.git*
 .idea
 .vscode
 /storage/*.key 
