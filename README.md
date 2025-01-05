@@ -110,6 +110,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-Sandhan Walia - [@sandhanwalia](https://github.com/sandhanwalia)
+harry Sandhanwalia - [@sandhanwalia](https://www.linkedin.com/in/sandhanwalia/)
 
 Project Link: [https://github.com/sandhanwalia/mort-zilla](https://github.com/sandhanwalia/mort-zilla)
