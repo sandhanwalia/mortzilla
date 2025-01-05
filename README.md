@@ -2,7 +2,8 @@
 
 A sophisticated mortgage calculator built with Laravel, Vue.js, and Tailwind CSS that helps users understand their mortgage payments, equity growth, and long-term financial implications.
 
-![MortZilla Screenshot](screenshot.png) <!-- You'll need to add a screenshot of your app -->
+![image](https://github.com/user-attachments/assets/6c09eaff-6969-427a-9fdb-c17f049d73f3)
+
 
 ## Features
 
