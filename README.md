@@ -110,6 +110,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
+Harry Sandhanwalia - [LinkedIn](https://www.linkedin.com/in/sandhanwalia/)
 
-Project Link: [https://github.com/yourusername/mort-zilla](https://github.com/yourusername/mort-zilla)
+Project Link: [https://github.com/sandhanwalia/mort-zilla](https://github.com/sandhanwalia/mort-zilla)
