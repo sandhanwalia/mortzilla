@@ -17,3 +17,6 @@ yarn-error.log
 /.idea
 /.vscode
 .DS_Store
+/dist/
+/composer.lock
+/debug.log
