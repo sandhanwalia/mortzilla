@@ -18,12 +18,16 @@ export default defineConfig({
         }),
     ],
     build: {
-        outDir: 'public/build',
-        assetsDir: '',
+        outDir: 'public',
+        assetsDir: 'assets',
         manifest: true,
         rollupOptions: {
             output: {
-                manualChunks: undefined
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        return 'vendor';
+                    }
+                }
             }
         }
     }
