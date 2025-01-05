@@ -2,7 +2,6 @@
     "version": 2,
     "buildCommand": "npm run build",
     "outputDirectory": "public",
-    "framework": "vite",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.6.0"
