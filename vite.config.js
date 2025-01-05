@@ -1,13 +1,8 @@
 import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
     plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: true,
-        }),
         vue({
             template: {
                 transformAssetUrls: {
@@ -19,13 +14,14 @@ export default defineConfig({
     ],
     build: {
         outDir: 'public/build',
-        assetsDir: '',
+        assetsDir: 'assets',
         manifest: true,
         chunkSizeWarningLimit: 1600,
         rollupOptions: {
+            input: 'resources/js/app.js',
             output: {
                 manualChunks: {
-                    vendor: ['vue', '@inertiajs/vue3', 'chart.js', 'jspdf', 'html2canvas']
+                    vendor: ['vue', 'chart.js', 'jspdf', 'html2canvas']
                 },
                 assetFileNames: 'assets/[name]-[hash][extname]',
                 chunkFileNames: 'assets/[name]-[hash].js',

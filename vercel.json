@@ -2,11 +2,6 @@
     "version": 2,
     "buildCommand": "npm run build",
     "outputDirectory": "public",
-    "functions": {
-        "api/index.php": {
-            "runtime": "vercel-php@0.6.0"
-        }
-    },
     "routes": [
         {
             "src": "/build/(.*)",
@@ -15,15 +10,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "/api/index.php"
+            "dest": "/index.html"
         }
-    ],
-    "env": {
-        "APP_ENV": "production",
-        "APP_DEBUG": "false",
-        "APP_URL": "https://mort-zilla.vercel.app",
-        "CACHE_DRIVER": "array",
-        "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "array"
-    }
+    ]
 } 
