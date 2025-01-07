@@ -1,0 +1,86 @@
+{
+  "containerDefinitions": [
+      {
+          "name": "app",
+          "image": "046267985816.dkr.ecr.us-west-1.amazonaws.com/mortzilla:v1.0.0",
+          "cpu": 0,
+          "portMappings": [
+              {
+                  "name": "app-8001-tcp",
+                  "containerPort": 8001,
+                  "hostPort": 8001,
+                  "protocol": "tcp",
+                  "appProtocol": "http"
+              }
+          ],
+          "essential": true,
+          "environment": [
+            {
+              "name": "APP_NAME",
+              "value": "Laravel"
+            },
+            {
+              "name": "APP_ENV",
+              "value": "production"
+            },
+            {
+              "name": "APP_KEY",
+              "value": "base64:6pywqb6gj/Kzt1spktHqC8leyRdjP5g90A7T7ittxdI="
+            },
+            {
+              "name": "APP_DEBUG",
+              "value": "true"
+            },
+            {
+              "name": "APP_TIMEZONE",
+              "value": "UTC"
+            },
+            {
+              "name": "APP_URL",
+              "value": "http://localhost"
+            },
+            {
+              "name": "APP_LOCALE",
+              "value": "en"
+            },
+            {
+              "name": "APP_FALLBACK_LOCALE",
+              "value": "en"
+            },
+            {
+              "name": "APP_FAKER_LOCALE",
+              "value": "en_US"
+            }
+          ],
+          "environmentFiles": [],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "ulimits": [],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-create-group": "true",
+                  "awslogs-group": "/ecs/MortZilla",
+                  "awslogs-region": "us-west-1",
+                  "awslogs-stream-prefix": "ecs"
+              },
+              "secretOptions": []
+          }
+      }
+  ],
+  "family": "mortzilla",
+  "executionRoleArn": "arn:aws:iam::046267985816:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "3072",
+  "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+  },
+  "tags": []
+}
