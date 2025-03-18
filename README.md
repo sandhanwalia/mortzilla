@@ -17,7 +17,7 @@ A sophisticated mortgage calculator built with Laravel, Vue.js, and Tailwind CSS
 
 ## Demo
 
-[Live Demo](https://mort-zilla.vercel.app) <!-- Will be available after deployment -->
+[Live Demo](https://mort-zilla.com) <!-- Will be available after deployment -->
 
 ## Tech Stack
 
