@@ -9,12 +9,12 @@ env:
   PROJECT_ID: poc-1-aima-pmu
   SERVICE_NAME: mortzilla-web
   REGION: us-central1
-  GCP_PROJECT_NUMBER: 980800581325
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla
   SERVICE_ACCOUNT: github-actions@poc-1-aima-pmu.iam.gserviceaccount.com
+  GCP_PROJECT_NUMBER: 980800581325
   APP_KEY: base64:NrKc1wZNqxKcVZXBVhGqY9TnQPBXI6c6RIwQJqRMvAE=
   SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
-
+  
 jobs:
   deploy:
     name: Build and Deploy
@@ -27,9 +27,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Service Account Key File
+      - name: Create Service Account Key File
         run: |
-          echo "ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAicG9jLTEtYWltYS1wbXUiLAogICJwcml2YXRlX2tleV9pZCI6ICI0MzQ1MmJkN2VkY2MxMmIwNzAxYzkxMjFhNmM3MWI2NjI4NjQ4N2Q5IiwKICAicHJpdmF0ZV9rZXkiOiAiLS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tXG5NSUlFdkFJQkFEQU5CZ2txaGtpRzl3MEJBUUVGQUFTQ0JLWXdnZ1NpQWdFQUFvSUJBUUM0UEo2cTBoYzBxUWpUXG5PU0M3SndERmE3bDYxTm9lNmlQNTRFREFMYTNLU29kN3pONmVpQ1FHb25ZSFdGWktMamFENkdPdDRrOFJ4NVJoXG5XOEt5YmRjdTlSbUg0QU1oMFY3ZlhibDdRdzRWTDlyNlE2bTN3VG1XejU5TmpGR1J1MFhOcEQrVGdmN3pXeVNKXG5mbkdqQmRhd0Z4UW9JZ2NWMXNzRHU1dW5sOWdtUzFIT001aUZJOTZnd29CRnViUVpTRERadWpSQ0pNRXBlZ094XG5tUis4alpVTnZjdWo2OWdhYnRBZm1mN3dYaFdxY1V0YkhIRGt1Mkl5YzFoNHdQRzhHa0RZVnBaSitZYTEwc0lTXG5uWUtrYyt3T3NHa3EzeWlMckxDRnBnazBGMWlXRGVDVmdDa0ZEMWhBTFZGeWlvbThhbUMxTXRYVXpVWXk5UU9EXG5oOUlCNUNSOUFnTUJBQUVDZ2Y5SHdDRFh6R0Nqb1plQmVENHRjYlpiTEg5Y283dm9nWHFCVmlGN0hSdmVrdlRLXG5XN0pYY2EzSlRoV3BZRDNVY3NTVk5EalEvMnVZbXFGN3I0Mmp2SW5FY3haa3VyK3d1TC90UGF5eUI3Z25pQzdaXG5lN08yd3duRU1oZSt6d0NQRGF6VTZhS2x0a2V0NVZFSW9ZS2dGRms3T3ZUcmVTSGkzM2N4RnBLaHpBRVZUcFlpXG5NYVVlWE04WHg4VW1FUjNycnd4OUxiR0FYTEwxTlNsSTJhUEVqeXNSN3FlUzJaWUhqYzhaQytwTG1Qb2hFQzByXG5zL0xGNjN1R2dCakU5dFZ6MDFvdUFhTDdXVzlCQTZJSWhINkh3SElXOVlQUTVQNkhoemh2U3hLcWEzaE8wM2lnXG5SQU1VOUdsMVVuVVhYVFhYNCtRbEZ0Tk9VbjNSaXBENlVWZXRCSThDZ1lFQTdzUjNocXNqVTJJN0Y3TFJSR1NJXG56Y3U1T2lwSnFUUG9INDI4Z3piWjUzNTlnemtmSlZIVGUzNjgrYUZzbDc3YmJzdXU1NHFCRGt4a2QrVFM3YU1LXG5uQ1hiTmE3L0k5eWlFdENjbjh4cEhLeS83TkNjdXlkeXJrdEJIa21wdFJNZjU5VnZ2dDZKeXpLSmJIQjlzQTNiXG5jcVJNZS94QzFZQlJOaVRESTZjL3ptY0NnWUVBeFlpaEtmU3YyT2RCSmY3cHp2LzZ4NFdXdUNlaUZ1R0dTWldVXG42UDVpOWFNRmExS216TVVxZ25VUjRjUkJLVi9NaWd6STVkbnNvK1VUTDN2a3c1c1hWWmtxOTF3YTlDd0FjZ1pOXG5sdmxONDQraDV2bnlTZVZUQzA5cUNJeTV6dFdlcnV4a0JpVVEva0ZybnlIVm8vOXdpdHpUYlIyL0ZiSk1pZ3doXG5FUGhtbjNzQ2dZRUFoS2xhYzlPUWpCclBGR3JCUlF2S3l2VS9WQ2I4eUd0VHRIeHUya1RXcTMyblJRcXUySEJ2XG5YWFZja0NKMWtKWjFtMGpHUkZXN1FQT0crdXFEbTQ5MExMQUg3UHJ2UGNDdnVGNTZOM3MraDdVZjZmYzZyZTNNXG5GVFV3MkNBN2o2VXhuQUVGMW5vVSszWjN6bTF1R0N5SzJsYVpQR1k3eUI1RWdSM0o0bnhod2s4Q2dZRUFwZmVlXG5NYm84NVdtbisxeXE1aGw5ZzVaaWhHZ0ljR0VjaTBiNnpxaXVUT1NqOFFDSTFSUDBHNWh4WmRlWFNFUU5meEF1XG4yN0MyZXg1RmVHZ0lWYkZCY2RJM240M3J0NndnMDYwb0UrbHozL2NXZVJNWTE2MnVrSm93NU80WVVBaDhRMHlxXG4zZDdXNEVubk90VWF3Nmdqendpck84cjZlaWhNMXRCS0dCQWRhWEVDZ1lCVG1YMFRWOE1tM0FMWS80UDZBVitXXG41Y08wTXZmSXAvZHNNeVNVaFNvejh4R1JWTlA0eDdPUmlGWE5IalFLaWI4WDZKOUJTM1dmYU9Ba2ZPMFc5cTVoXG4yUE5hcm5TM0x2OG1YcVdSaU1DdWhrRlB3Zko5NVZjTGlxVStIT3RPVHoydmFGMURzT3lBUlpQd3FBRzljdnMvXG5NU1NsTUZPRkZnazQwd0NTS2oyRTV3PT1cbi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS1cbiIsCiAgImNsaWVudF9lbWFpbCI6ICJnaXRodWItYWN0aW9uc0Bwb2MtMS1haW1hLXBtdS5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsCiAgImNsaWVudF9pZCI6ICIxMDAzODM3ODg2ODAyNTYxMTg3MjIiLAogICJhdXRoX3VyaSI6ICJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20vby9vYXV0aDIvYXV0aCIsCiAgInRva2VuX3VyaSI6ICJodHRwczovL29hdXRoMi5nb29nbGVhcGlzLmNvbS90b2tlbiIsCiAgImF1dGhfcHJvdmlkZXJfeDUwOV9jZXJ0X3VybCI6ICJodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9vYXV0aDIvdjEvY2VydHMiLAogICJjbGllbnRfeDUwOV9jZXJ0X3VybCI6ICJodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9yb2JvdC92MS9tZXRhZGF0YS94NTA5L2dpdGh1Yi1hY3Rpb25zJTQwcG9jLTEtYWltYS1wbXUuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLAogICJ1bml2ZXJzZV9kb21haW4iOiAiZ29vZ2xlYXBpcy5jb2==" | base64 -d > /tmp/service-account-key.json
+          # Create the service account key directly (not using base64)
+          cat > /tmp/service-account-key.json << 'EOF'
+          {
+            "type": "service_account",
+            "project_id": "poc-1-aima-pmu",
+            "private_key_id": "your-private-key-id",
+            "private_key": "-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY_CONTENT_HERE\n-----END PRIVATE KEY-----\n",
+            "client_email": "github-actions@poc-1-aima-pmu.iam.gserviceaccount.com",
+            "client_id": "your-client-id",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/github-actions%40poc-1-aima-pmu.iam.gserviceaccount.com"
+          }
+          EOF
           echo "Created service account key file"
 
       - name: Google Auth
@@ -37,20 +51,9 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ env.GCP_SA_KEY_FILE }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
           project_id: ${{ env.PROJECT_ID }}
         env:
           GCP_SA_KEY_FILE: /tmp/service-account-key.json
-
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          install_components: 'gke-gcloud-auth-plugin'
-
-      - name: Use Application Default Credentials
-        run: |
-          gcloud auth application-default login
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -59,7 +62,7 @@ jobs:
 
       - name: Configure Docker for Artifact Registry
         run: |
-          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
       - name: Generate version and revision suffix
         id: versioning
@@ -83,6 +86,7 @@ jobs:
         run: |
           # Get current serving revision
           CURRENT_REVISION=$(gcloud run revisions list \
+            --project=${{ env.PROJECT_ID }} \
             --service=${{ env.SERVICE_NAME }} \
             --region=${{ env.REGION }} \
             --filter="traffic_percent>0" \
@@ -90,14 +94,20 @@ jobs:
             --limit=1)
 
           # Check current deployment state
-          CURRENT_STATE=$(gcloud run revisions describe $CURRENT_REVISION \
-            --region=${{ env.REGION }} \
-            --format="value(labels.state)" || echo "active")
+          if [ -n "$CURRENT_REVISION" ]; then
+            CURRENT_STATE=$(gcloud run revisions describe $CURRENT_REVISION \
+              --project=${{ env.PROJECT_ID }} \
+              --region=${{ env.REGION }} \
+              --format="value(labels.state)" || echo "active")
+          else
+            CURRENT_STATE="active"
+          fi
 
           # Determine new state (if current is active, deploy passive, and vice versa)
           NEW_STATE=$([ "$CURRENT_STATE" = "active" ] && echo "passive" || echo "active")
           
           gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --project=${{ env.PROJECT_ID }} \
             --image ${{ env.ARTIFACT_REGISTRY }}/mortzilla-web:${{ env.TIMESTAMP }} \
             --region ${{ env.REGION }} \
             --platform managed \
@@ -116,6 +126,7 @@ jobs:
           # Ensure traffic stays with current revision during testing
           if [ -n "$CURRENT_REVISION" ]; then
             gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+              --project=${{ env.PROJECT_ID }} \
               --region=${{ env.REGION }} \
               --to-revisions=$CURRENT_REVISION=100
           fi
@@ -128,6 +139,7 @@ jobs:
         run: |
           sleep 30
           NEW_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+            --project=${{ env.PROJECT_ID }} \
             --region=${{ env.REGION }} \
             --format="value(status.url)")
 
@@ -162,6 +174,7 @@ jobs:
           NEW_REVISION="${{ env.SERVICE_NAME }}-${{ env.REVISION_SUFFIX }}"
           
           gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+            --project=${{ env.PROJECT_ID }} \
             --region=${{ env.REGION }} \
             --to-revisions=$NEW_REVISION=100
 
@@ -170,6 +183,7 @@ jobs:
         run: |
           set -e
           REVISIONS=$(gcloud run revisions list \
+            --project=${{ env.PROJECT_ID }} \
             --service ${{ env.SERVICE_NAME }} \
             --region=${{ env.REGION }} \
             --format='value(metadata.name)' \
@@ -180,6 +194,7 @@ jobs:
             COUNT=$((COUNT + 1))
             if [ $COUNT -gt 5 ]; then
               gcloud run revisions delete $REVISION \
+                --project=${{ env.PROJECT_ID }} \
                 --region=${{ env.REGION }} \
                 --quiet || true
             fi
@@ -189,6 +204,7 @@ jobs:
         if: failure()
         run: |
           CURRENT_REVISION=$(gcloud run revisions list \
+            --project=${{ env.PROJECT_ID }} \
             --service=${{ env.SERVICE_NAME }} \
             --region=${{ env.REGION }} \
             --filter="traffic_percent>0" \
@@ -198,6 +214,7 @@ jobs:
           if [ -n "$CURRENT_REVISION" ]; then
             echo "Rolling back to: $CURRENT_REVISION"
             gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+              --project=${{ env.PROJECT_ID }} \
               --region=${{ env.REGION }} \
               --to-revisions=$CURRENT_REVISION=100
           fi
