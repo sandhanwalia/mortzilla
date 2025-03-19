@@ -18,4 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    // ->tap(function ($app) {
+    //     $port = env('PORT', '8080');
+    //     $_SERVER['SERVER_PORT'] = $port;
+    //     putenv("SERVER_PORT=$port");
+    // })
+    ->create();

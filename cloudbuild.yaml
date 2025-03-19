@@ -1,0 +1,28 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla/mortzilla-web', '.']
+
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla/mortzilla-web']
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'mortzilla-web'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla/mortzilla-web'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'APP_ENV=production,APP_DEBUG=true,LOG_CHANNEL=stderr,APP_KEY=base64:NrKc1wZNqxKcVZXBVhGqY9TnQPBXI6c6RIwQJqRMvAE=,DB_CONNECTION=sqlite,DB_DATABASE=/var/www/html/database/database.sqlite,ASSET_URL=https://mortzilla-web-980800581325.us-central1.run.app'
+
+images:
+  - 'us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla/mortzilla-web'

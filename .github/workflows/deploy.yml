@@ -1,0 +1,212 @@
+name: Blue-Green Deployment to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: poc-1-aima-pmu
+  SERVICE_NAME: mortzilla-web
+  REGION: us-central1
+  GCP_PROJECT_NUMBER: 980800581325
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla
+  SERVICE_ACCOUNT: github-actions@poc-1-aima-pmu.iam.gserviceaccount.com
+  APP_KEY: base64:w+mrHxgPOQDBMHmLBNrbJypm2N9KlHI2esQI0yt1AHE=
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          install_components: 'gke-gcloud-auth-plugin'
+
+      - name: Use Application Default Credentials
+        run: |
+          gcloud auth application-default login
+
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Generate version and revision suffix
+        id: versioning
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          REVISION_SUFFIX="rc-${TIMESTAMP}"
+          
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+          echo "REVISION_SUFFIX=$REVISION_SUFFIX" >> $GITHUB_ENV
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.ARTIFACT_REGISTRY }}/mortzilla-web:${{ env.TIMESTAMP }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy New Revision
+        run: |
+          # Get current serving revision
+          CURRENT_REVISION=$(gcloud run revisions list \
+            --service=${{ env.SERVICE_NAME }} \
+            --region=${{ env.REGION }} \
+            --filter="traffic_percent>0" \
+            --format="value(metadata.name)" \
+            --limit=1)
+
+          # Check current deployment state
+          CURRENT_STATE=$(gcloud run revisions describe $CURRENT_REVISION \
+            --region=${{ env.REGION }} \
+            --format="value(labels.state)" || echo "active")
+
+          # Determine new state (if current is active, deploy passive, and vice versa)
+          NEW_STATE=$([ "$CURRENT_STATE" = "active" ] && echo "passive" || echo "active")
+          
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.ARTIFACT_REGISTRY }}/mortzilla-web:${{ env.TIMESTAMP }} \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --service-account ${{ env.SERVICE_ACCOUNT }} \
+            --min-instances 1 \
+            --memory 512Mi \
+            --revision-suffix=${{ env.REVISION_SUFFIX }} \
+            --labels=state=$NEW_STATE \
+            --no-traffic \
+            --timeout 300 \
+            --execution-environment gen2 \
+            --cpu=1 \
+            --set-env-vars STARTUP_CPU_BOOST=true,APP_ENV=production,APP_DEBUG=true,LOG_CHANNEL=stderr,APP_KEY=${{ secrets.APP_KEY }},DB_CONNECTION=sqlite,DB_DATABASE=/var/www/html/database/database.sqlite,ASSET_URL=https://${{ env.SERVICE_NAME }}-${{ secrets.GCP_PROJECT_NUMBER }}.${{ env.REGION }}.run.app
+
+          # Ensure traffic stays with current revision during testing
+          if [ -n "$CURRENT_REVISION" ]; then
+            gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+              --region=${{ env.REGION }} \
+              --to-revisions=$CURRENT_REVISION=100
+          fi
+
+          echo "NEW_STATE=$NEW_STATE" >> $GITHUB_ENV
+          echo "CURRENT_REVISION=$CURRENT_REVISION" >> $GITHUB_ENV
+
+      - name: Test New Revision
+        id: test
+        run: |
+          sleep 30
+          NEW_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+            --region=${{ env.REGION }} \
+            --format="value(status.url)")
+
+          echo "Testing URL: $NEW_URL"
+
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+          SUCCESS=false
+
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$NEW_URL")
+
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              SUCCESS=true
+              echo "status=success" >> $GITHUB_ENV
+              break
+            else
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              echo "Attempt $RETRY_COUNT failed with status $HTTP_STATUS"
+              [ $RETRY_COUNT -lt $MAX_RETRIES ] && sleep 10
+            fi
+          done
+
+          if [ "$SUCCESS" = false ]; then
+            echo "status=failure" >> $GITHUB_ENV
+            exit 1
+          fi
+
+      - name: Migrate traffic to new revision
+        if: env.status == 'success'
+        run: |
+          NEW_REVISION="${{ env.SERVICE_NAME }}-${{ env.REVISION_SUFFIX }}"
+          
+          gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+            --region=${{ env.REGION }} \
+            --to-revisions=$NEW_REVISION=100
+
+      - name: Clean up old revisions (keep last 5)
+        if: always()
+        run: |
+          set -e
+          REVISIONS=$(gcloud run revisions list \
+            --service ${{ env.SERVICE_NAME }} \
+            --region=${{ env.REGION }} \
+            --format='value(metadata.name)' \
+            --sort-by=~metadata.creationTimestamp --limit=1000)
+
+          COUNT=0
+          for REVISION in $REVISIONS; do
+            COUNT=$((COUNT + 1))
+            if [ $COUNT -gt 5 ]; then
+              gcloud run revisions delete $REVISION \
+                --region=${{ env.REGION }} \
+                --quiet || true
+            fi
+          done
+
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          CURRENT_REVISION=$(gcloud run revisions list \
+            --service=${{ env.SERVICE_NAME }} \
+            --region=${{ env.REGION }} \
+            --filter="traffic_percent>0" \
+            --format="value(metadata.name)" \
+            --limit=1)
+
+          if [ -n "$CURRENT_REVISION" ]; then
+            echo "Rolling back to: $CURRENT_REVISION"
+            gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+              --region=${{ env.REGION }} \
+              --to-revisions=$CURRENT_REVISION=100
+          fi
+
+      - name: Notify Deployment Status
+        if: always()
+        run: |
+          NEW_REVISION="${{ env.SERVICE_NAME }}-${{ env.REVISION_SUFFIX }}"
+          ENVIRONMENT="*Production*"
+          STATUS="SUCCEEDED"
+          STATUS_EMOJI="✅"
+          if [ "${{ job.status }}" != "success" ]; then
+            STATUS="FAILED"
+            STATUS_EMOJI="❌"
+          fi
+          
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            curl -X POST -H "Content-Type: application/json" \
+            -d "{\"text\": \"${STATUS_EMOJI} [${ENVIRONMENT}] *Deployment* ${STATUS}\n🚀 *Service:* ${{ env.SERVICE_NAME }}\n📦 *Revision:* ${NEW_REVISION}\n🌎 *Region:* ${{ env.REGION }}\n💬 *Commit:* *${COMMIT_MSG}*\"}" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
+          fi
