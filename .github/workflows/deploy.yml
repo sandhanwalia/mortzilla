@@ -12,7 +12,8 @@ env:
   GCP_PROJECT_NUMBER: 980800581325
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla
   SERVICE_ACCOUNT: github-actions@poc-1-aima-pmu.iam.gserviceaccount.com
-  APP_KEY: base64:w+mrHxgPOQDBMHmLBNrbJypm2N9KlHI2esQI0yt1AHE=
+  APP_KEY: base64:NrKc1wZNqxKcVZXBVhGqY9TnQPBXI6c6RIwQJqRMvAE=
+  SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
 
 jobs:
   deploy:
@@ -23,6 +24,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Service Account Key File
+        run: |
+          echo "ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAicG9jLTEtYWltYS1wbXUiLAogICJwcml2YXRlX2tleV9pZCI6ICI0MzQ1MmJkN2VkY2MxMmIwNzAxYzkxMjFhNmM3MWI2NjI4NjQ4N2Q5IiwKICAicHJpdmF0ZV9rZXkiOiAiLS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tXG5NSUlFdkFJQkFEQU5CZ2txaGtpRzl3MEJBUUVGQUFTQ0JLWXdnZ1NpQWdFQUFvSUJBUUM0UEo2cTBoYzBxUWpUXG5PU0M3SndERmE3bDYxTm9lNmlQNTRFREFMYTNLU29kN3pONmVpQ1FHb25ZSFdGWktMamFENkdPdDRrOFJ4NVJoXG5XOEt5YmRjdTlSbUg0QU1oMFY3ZlhibDdRdzRWTDlyNlE2bTN3VG1XejU5TmpGR1J1MFhOcEQrVGdmN3pXeVNKXG5mbkdqQmRhd0Z4UW9JZ2NWMXNzRHU1dW5sOWdtUzFIT001aUZJOTZnd29CRnViUVpTRERadWpSQ0pNRXBlZ094XG5tUis4alpVTnZjdWo2OWdhYnRBZm1mN3dYaFdxY1V0YkhIRGt1Mkl5YzFoNHdQRzhHa0RZVnBaSitZYTEwc0lTXG5uWUtrYyt3T3NHa3EzeWlMckxDRnBnazBGMWlXRGVDVmdDa0ZEMWhBTFZGeWlvbThhbUMxTXRYVXpVWXk5UU9EXG5oOUlCNUNSOUFnTUJBQUVDZ2Y5SHdDRFh6R0Nqb1plQmVENHRjYlpiTEg5Y283dm9nWHFCVmlGN0hSdmVrdlRLXG5XN0pYY2EzSlRoV3BZRDNVY3NTVk5EalEvMnVZbXFGN3I0Mmp2SW5FY3haa3VyK3d1TC90UGF5eUI3Z25pQzdaXG5lN08yd3duRU1oZSt6d0NQRGF6VTZhS2x0a2V0NVZFSW9ZS2dGRms3T3ZUcmVTSGkzM2N4RnBLaHpBRVZUcFlpXG5NYVVlWE04WHg4VW1FUjNycnd4OUxiR0FYTEwxTlNsSTJhUEVqeXNSN3FlUzJaWUhqYzhaQytwTG1Qb2hFQzByXG5zL0xGNjN1R2dCakU5dFZ6MDFvdUFhTDdXVzlCQTZJSWhINkh3SElXOVlQUTVQNkhoemh2U3hLcWEzaE8wM2lnXG5SQU1VOUdsMVVuVVhYVFhYNCtRbEZ0Tk9VbjNSaXBENlVWZXRCSThDZ1lFQTdzUjNocXNqVTJJN0Y3TFJSR1NJXG56Y3U1T2lwSnFUUG9INDI4Z3piWjUzNTlnemtmSlZIVGUzNjgrYUZzbDc3YmJzdXU1NHFCRGt4a2QrVFM3YU1LXG5uQ1hiTmE3L0k5eWlFdENjbjh4cEhLeS83TkNjdXlkeXJrdEJIa21wdFJNZjU5VnZ2dDZKeXpLSmJIQjlzQTNiXG5jcVJNZS94QzFZQlJOaVRESTZjL3ptY0NnWUVBeFlpaEtmU3YyT2RCSmY3cHp2LzZ4NFdXdUNlaUZ1R0dTWldVXG42UDVpOWFNRmExS216TVVxZ25VUjRjUkJLVi9NaWd6STVkbnNvK1VUTDN2a3c1c1hWWmtxOTF3YTlDd0FjZ1pOXG5sdmxONDQraDV2bnlTZVZUQzA5cUNJeTV6dFdlcnV4a0JpVVEva0ZybnlIVm8vOXdpdHpUYlIyL0ZiSk1pZ3doXG5FUGhtbjNzQ2dZRUFoS2xhYzlPUWpCclBGR3JCUlF2S3l2VS9WQ2I4eUd0VHRIeHUya1RXcTMyblJRcXUySEJ2XG5YWFZja0NKMWtKWjFtMGpHUkZXN1FQT0crdXFEbTQ5MExMQUg3UHJ2UGNDdnVGNTZOM3MraDdVZjZmYzZyZTNNXG5GVFV3MkNBN2o2VXhuQUVGMW5vVSszWjN6bTF1R0N5SzJsYVpQR1k3eUI1RWdSM0o0bnhod2s4Q2dZRUFwZmVlXG5NYm84NVdtbisxeXE1aGw5ZzVaaWhHZ0ljR0VjaTBiNnpxaXVUT1NqOFFDSTFSUDBHNWh4WmRlWFNFUU5meEF1XG4yN0MyZXg1RmVHZ0lWYkZCY2RJM240M3J0NndnMDYwb0UrbHozL2NXZVJNWTE2MnVrSm93NU80WVVBaDhRMHlxXG4zZDdXNEVubk90VWF3Nmdqendpck84cjZlaWhNMXRCS0dCQWRhWEVDZ1lCVG1YMFRWOE1tM0FMWS80UDZBVitXXG41Y08wTXZmSXAvZHNNeVNVaFNvejh4R1JWTlA0eDdPUmlGWE5IalFLaWI4WDZKOUJTM1dmYU9Ba2ZPMFc5cTVoXG4yUE5hcm5TM0x2OG1YcVdSaU1DdWhrRlB3Zko5NVZjTGlxVStIT3RPVHoydmFGMURzT3lBUlpQd3FBRzljdnMvXG5NU1NsTUZPRkZnazQwd0NTS2oyRTV3PT1cbi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS1cbiIsCiAgImNsaWVudF9lbWFpbCI6ICJnaXRodWItYWN0aW9uc0Bwb2MtMS1haW1hLXBtdS5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsCiAgImNsaWVudF9pZCI6ICIxMDAzODM3ODg2ODAyNTYxMTg3MjIiLAogICJhdXRoX3VyaSI6ICJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20vby9vYXV0aDIvYXV0aCIsCiAgInRva2VuX3VyaSI6ICJodHRwczovL29hdXRoMi5nb29nbGVhcGlzLmNvbS90b2tlbiIsCiAgImF1dGhfcHJvdmlkZXJfeDUwOV9jZXJ0X3VybCI6ICJodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9vYXV0aDIvdjEvY2VydHMiLAogICJjbGllbnRfeDUwOV9jZXJ0X3VybCI6ICJodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9yb2JvdC92MS9tZXRhZGF0YS94NTA5L2dpdGh1Yi1hY3Rpb25zJTQwcG9jLTEtYWltYS1wbXUuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLAogICJ1bml2ZXJzZV9kb21haW4iOiAiZ29vZ2xlYXBpcy5jb2==" | base64 -d > /tmp/service-account-key.json
+          echo "Created service account key file"
+
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ env.GCP_SA_KEY_FILE }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          project_id: ${{ env.PROJECT_ID }}
+        env:
+          GCP_SA_KEY_FILE: /tmp/service-account-key.json
+
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
@@ -32,14 +51,6 @@ jobs:
       - name: Use Application Default Credentials
         run: |
           gcloud auth application-default login
-
-      - name: Google Auth
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
-          project_id: ${{ env.PROJECT_ID }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -100,7 +111,7 @@ jobs:
             --timeout 300 \
             --execution-environment gen2 \
             --cpu=1 \
-            --set-env-vars STARTUP_CPU_BOOST=true,APP_ENV=production,APP_DEBUG=true,LOG_CHANNEL=stderr,APP_KEY=${{ secrets.APP_KEY }},DB_CONNECTION=sqlite,DB_DATABASE=/var/www/html/database/database.sqlite,ASSET_URL=https://${{ env.SERVICE_NAME }}-${{ secrets.GCP_PROJECT_NUMBER }}.${{ env.REGION }}.run.app
+            --set-env-vars STARTUP_CPU_BOOST=true,APP_ENV=production,APP_DEBUG=true,LOG_CHANNEL=stderr,APP_KEY=${{ env.APP_KEY }},DB_CONNECTION=sqlite,DB_DATABASE=/var/www/html/database/database.sqlite,ASSET_URL=https://${{ env.SERVICE_NAME }}-${{ env.GCP_PROJECT_NUMBER }}.${{ env.REGION }}.run.app
 
           # Ensure traffic stays with current revision during testing
           if [ -n "$CURRENT_REVISION" ]; then
@@ -205,8 +216,7 @@ jobs:
           
           COMMIT_MSG=$(git log -1 --pretty=format:"%s")
           
-          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
-            curl -X POST -H "Content-Type: application/json" \
+          # Send notification to Slack
+          curl -X POST -H "Content-Type: application/json" \
             -d "{\"text\": \"${STATUS_EMOJI} [${ENVIRONMENT}] *Deployment* ${STATUS}\n🚀 *Service:* ${{ env.SERVICE_NAME }}\n📦 *Revision:* ${NEW_REVISION}\n🌎 *Region:* ${{ env.REGION }}\n💬 *Commit:* *${COMMIT_MSG}*\"}" \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
-          fi
+            ${{ env.SLACK_WEBHOOK_URL }}
