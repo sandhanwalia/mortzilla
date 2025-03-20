@@ -12,8 +12,6 @@ env:
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla
   SERVICE_ACCOUNT: github-actions@poc-1-aima-pmu.iam.gserviceaccount.com
   GCP_PROJECT_NUMBER: 980800581325
-  APP_KEY: base64:NrKc1wZNqxKcVZXBVhGqY9TnQPBXI6c6RIwQJqRMvAE=
-  SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
   
 jobs:
   deploy:
@@ -27,33 +25,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Create Service Account Key File
-        run: |
-          # Create the service account key directly (not using base64)
-          cat > /tmp/service-account-key.json << 'EOF'
-          {
-            "type": "service_account",
-            "project_id": "poc-1-aima-pmu",
-            "private_key_id": "your-private-key-id",
-            "private_key": "-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY_CONTENT_HERE\n-----END PRIVATE KEY-----\n",
-            "client_email": "github-actions@poc-1-aima-pmu.iam.gserviceaccount.com",
-            "client_id": "your-client-id",
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/github-actions%40poc-1-aima-pmu.iam.gserviceaccount.com"
-          }
-          EOF
-          echo "Created service account key file"
-
-      - name: Google Auth
-        id: auth
-        uses: google-github-actions/auth@v2
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ env.GCP_SA_KEY_FILE }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
           project_id: ${{ env.PROJECT_ID }}
-        env:
-          GCP_SA_KEY_FILE: /tmp/service-account-key.json
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -112,59 +89,72 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --service-account ${{ env.SERVICE_ACCOUNT }} \
-            --min-instances 1 \
-            --memory 512Mi \
-            --revision-suffix=${{ env.REVISION_SUFFIX }} \
+            --revision-suffix ${{ env.REVISION_SUFFIX }} \
             --labels=state=$NEW_STATE \
-            --no-traffic \
-            --timeout 300 \
-            --execution-environment gen2 \
-            --cpu=1 \
-            --set-env-vars STARTUP_CPU_BOOST=true,APP_ENV=production,APP_DEBUG=true,LOG_CHANNEL=stderr,APP_KEY=${{ env.APP_KEY }},DB_CONNECTION=sqlite,DB_DATABASE=/var/www/html/database/database.sqlite,ASSET_URL=https://${{ env.SERVICE_NAME }}-${{ env.GCP_PROJECT_NUMBER }}.${{ env.REGION }}.run.app
+            --set-env-vars=APP_ENV=production,APP_DEBUG=true,LOG_CHANNEL=stderr,APP_KEY=${{ secrets.APP_KEY }},DB_CONNECTION=sqlite,DB_DATABASE=/var/www/html/database/database.sqlite,ASSET_URL=https://${{ env.SERVICE_NAME }}-${{ env.GCP_PROJECT_NUMBER }}.${{ env.REGION }}.run.app \
+            --no-traffic
 
-          # Ensure traffic stays with current revision during testing
-          if [ -n "$CURRENT_REVISION" ]; then
-            gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
-              --project=${{ env.PROJECT_ID }} \
-              --region=${{ env.REGION }} \
-              --to-revisions=$CURRENT_REVISION=100
-          fi
+          # Check health of new revision
+          NEW_REVISION="${{ env.SERVICE_NAME }}-${{ env.REVISION_SUFFIX }}"
 
-          echo "NEW_STATE=$NEW_STATE" >> $GITHUB_ENV
-          echo "CURRENT_REVISION=$CURRENT_REVISION" >> $GITHUB_ENV
+          # Debug revision information
+          echo "Getting detailed information about the new revision..."
+          gcloud run revisions describe $NEW_REVISION \
+            --project=${{ env.PROJECT_ID }} \
+            --region=${{ env.REGION }} || echo "Could not get detailed revision info yet"
 
-      - name: Test New Revision
-        id: test
-        run: |
-          sleep 30
-          NEW_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+          # Wait for service to initialize
+          echo "Waiting for service to initialize..."
+          sleep 20
+
+          # Try different methods to get the URL
+          NEW_URL=$(gcloud run revisions describe $NEW_REVISION \
             --project=${{ env.PROJECT_ID }} \
             --region=${{ env.REGION }} \
-            --format="value(status.url)")
+            --format="value(url)")
 
-          echo "Testing URL: $NEW_URL"
-
-          MAX_RETRIES=3
+          if [ -z "$NEW_URL" ]; then
+            echo "URL not found in 'url' field, trying alternative fields..."
+            NEW_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+              --project=${{ env.PROJECT_ID }} \
+              --region=${{ env.REGION }} \
+              --format="value(status.url)")
+            
+            if [ -z "$NEW_URL" ]; then
+              echo "Still couldn't get URL, using constructed URL as fallback"
+              NEW_URL="https://${{ env.SERVICE_NAME }}-${{ env.REVISION_SUFFIX }}---${{ env.GCP_PROJECT_NUMBER }}.${{ env.REGION }}.run.app"
+            fi
+          fi
+          
+          echo "New revision URL: $NEW_URL"
+          
+          # Health check with retries
+          MAX_RETRIES=5
           RETRY_COUNT=0
           SUCCESS=false
-
+          
           while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
-            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$NEW_URL")
-
-            if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "Performing health check attempt $((RETRY_COUNT + 1))..."
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $NEW_URL || echo "failed")
+            
+            if [ "$HTTP_STATUS" = "200" ]; then
               SUCCESS=true
+              echo "Health check passed with status $HTTP_STATUS"
               echo "status=success" >> $GITHUB_ENV
-              break
             else
               RETRY_COUNT=$((RETRY_COUNT + 1))
-              echo "Attempt $RETRY_COUNT failed with status $HTTP_STATUS"
-              [ $RETRY_COUNT -lt $MAX_RETRIES ] && sleep 10
+              echo "Health check failed with status $HTTP_STATUS. Retry $RETRY_COUNT of $MAX_RETRIES"
+              sleep 15
             fi
           done
-
+          
           if [ "$SUCCESS" = false ]; then
-            echo "status=failure" >> $GITHUB_ENV
+            echo "Health check failed after $MAX_RETRIES retries"
+            echo "status=failed" >> $GITHUB_ENV
+            echo "Detailed service information:"
+            gcloud run services describe ${{ env.SERVICE_NAME }} \
+              --project=${{ env.PROJECT_ID }} \
+              --region=${{ env.REGION }}
             exit 1
           fi
 
@@ -181,7 +171,6 @@ jobs:
       - name: Clean up old revisions (keep last 5)
         if: always()
         run: |
-          set -e
           REVISIONS=$(gcloud run revisions list \
             --project=${{ env.PROJECT_ID }} \
             --service ${{ env.SERVICE_NAME }} \
@@ -233,7 +222,6 @@ jobs:
           
           COMMIT_MSG=$(git log -1 --pretty=format:"%s")
           
-          # Send notification to Slack
           curl -X POST -H "Content-Type: application/json" \
-            -d "{\"text\": \"${STATUS_EMOJI} [${ENVIRONMENT}] *Deployment* ${STATUS}\n🚀 *Service:* ${{ env.SERVICE_NAME }}\n📦 *Revision:* ${NEW_REVISION}\n🌎 *Region:* ${{ env.REGION }}\n💬 *Commit:* *${COMMIT_MSG}*\"}" \
-            ${{ env.SLACK_WEBHOOK_URL }}
+          -d "{\"text\": \"${STATUS_EMOJI} [${ENVIRONMENT}] *Deployment* ${STATUS}\n🚀 *Service:* ${{ env.SERVICE_NAME }}\n📦 *Revision:* ${NEW_REVISION}\n🌎 *Region:* ${{ env.REGION }}\n💬 *Commit:* *${COMMIT_MSG}*\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
