@@ -1,6 +1,10 @@
 # Build stage
 FROM node:18 as build-stage
 
+# Add build arg
+ARG VITE_APP_URL
+ENV VITE_APP_URL=${VITE_APP_URL}
+
 WORKDIR /app
 COPY package*.json ./
 COPY vite.config.js ./

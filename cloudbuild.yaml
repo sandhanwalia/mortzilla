@@ -1,7 +1,9 @@
 steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla/mortzilla-web', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/poc-1-aima-pmu/mortzilla/mortzilla-web', 
+      '--build-arg', 'VITE_APP_URL=${_VITE_APP_URL}',
+      '.']
 
   # Push the container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
