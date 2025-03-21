@@ -7,6 +7,7 @@
           Mortgage Calculator
         </h1>
         <p class="text-gray-600">Calculate your monthly mortgage payments and explore different scenarios</p>
+        <p class="text-xs text-gray-500 mt-1">securely hosted on Google Cloud</p>
       </div>
       
       <div class="grid lg:grid-cols-3 gap-8">

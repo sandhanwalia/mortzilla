@@ -87,6 +87,11 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Add to your Nginx configuration
+RUN echo "add_header 'Access-Control-Allow-Origin' 'https://mortzilla.com' always;" >> /etc/nginx/conf.d/default.conf
+RUN echo "add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;" >> /etc/nginx/conf.d/default.conf
+RUN echo "add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;" >> /etc/nginx/conf.d/default.conf
+
 # Start script
 COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
