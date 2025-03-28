@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
-    <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8">
-      <div class="max-w-7xl mx-auto pt-20">
+    <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+      <div class="max-w-7xl mx-auto">
         <!-- Header Section -->
         <div class="text-center mb-12">
           <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3 leading-relaxed pb-1">
@@ -61,6 +61,8 @@
 import { ref, computed, defineComponent } from 'vue'
 import MainLayout from '@/Layouts/MainLayout.vue'
 import MortgageCalculator from '../Index/MortgageCalculator.vue'
+import AffordabilityCalculator from '../Index/AffordabilityCalculator.vue'
+import RefinanceCalculator from '../Index/RefinanceCalculator.vue'
 
 // Calculator definitions with icons
 const calculators = [
@@ -79,9 +81,7 @@ const calculators = [
   {
     id: 'refinance',
     name: 'Refinance Calculator',
-    component: defineComponent({
-      template: '<div class="text-center py-12">Refinance Calculator Coming Soon</div>'
-    }),
+    component: RefinanceCalculator,
     icon: defineComponent({
       template: `
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,9 +93,7 @@ const calculators = [
   {
     id: 'affordability',
     name: 'Affordability Calculator',
-    component: defineComponent({
-      template: '<div class="text-center py-12">Affordability Calculator Coming Soon</div>'
-    }),
+    component: AffordabilityCalculator,
     icon: defineComponent({
       template: `
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

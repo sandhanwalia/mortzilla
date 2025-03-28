@@ -15,9 +15,9 @@
           <!-- Navigation -->
           <nav class="hidden md:flex items-center space-x-8">
             <Link href="/" class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium">Home</Link>
-            <Link href="/CalculatorsPage" class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium">Calculators</Link>
+            <Link href="/calculators-page" class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium">Calculators</Link>
             <Link href="#" class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium">Resources</Link>
-            <Link href="/About" class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium">About</Link>
+            <Link href="/about" class="text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-medium">About</Link>
           </nav>
           
           <!-- CTA Button -->
@@ -42,9 +42,9 @@
       <!-- Mobile Menu -->
       <div v-if="mobileMenuOpen" class="md:hidden">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
-          <Link href="/Homepage" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Home</Link>
-          <Link href="/calculators" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Calculators</Link>
-          <Link href="/resources" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Resources</Link>
+          <Link href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Home</Link>
+          <Link href="/calculators-page" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Calculators</Link>
+          <Link href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Resources</Link>
           <Link href="/about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">About</Link>
           <!-- Add CTA button in mobile menu -->
           <div class="px-3 py-2">

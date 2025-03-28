@@ -1,386 +1,386 @@
 <template>
   <MainLayout>
-    <div class="max-w-5xl mx-auto pt-20">
-      <!-- Header Section -->
-      <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3 leading-relaxed pb-1">
-          Mortgage Calculator
-        </h1>
-        <p class="text-gray-600">Calculate your monthly mortgage payments and explore different scenarios</p>
-        <p class="text-xs text-gray-500 mt-1">securely hosted on Google Cloud</p>
-      </div>
-      
-      <div class="grid lg:grid-cols-3 gap-8">
-        <!-- Input Card -->
-        <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl p-8 backdrop-blur-lg bg-opacity-90">
-          <h2 class="text-xl font-semibold text-gray-800 mb-6">Loan Details</h2>
-          
-          <!-- Input Fields -->
-          <div class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Home Price</label>
-              <div class="relative">
-                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                <input 
-                  type="text" 
-                  :value="formatNumber(homePrice)"
-                  @input="e => {
-                    const value = parseFloat(e.target.value.replace(/[^0-9.]/g, ''))
-                    homePrice = isNaN(value) ? 0 : value
-                  }"
-                  class="w-full pl-8 pr-4 py-3 border-2 border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all duration-200"
-                  placeholder="Enter home price"
-                />
+    <div class="max-w-5xl mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+          <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3 leading-relaxed pb-1">
+            Mortgage Calculator
+          </h1>
+          <p class="text-gray-600">Calculate your monthly mortgage payments and explore different scenarios</p>
+          <p class="text-xs text-gray-500 mt-1">securely hosted on Google Cloud</p>
+        </div>
+        
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Input Card -->
+          <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl p-8 backdrop-blur-lg bg-opacity-90">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Loan Details</h2>
+            
+            <!-- Input Fields -->
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Home Price</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                  <input 
+                    type="text" 
+                    :value="formatNumber(homePrice)"
+                    @input="e => {
+                      const value = parseFloat(e.target.value.replace(/[^0-9.]/g, ''))
+                      homePrice = isNaN(value) ? 0 : value
+                    }"
+                    class="w-full pl-8 pr-4 py-3 border-2 border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all duration-200"
+                    placeholder="Enter home price"
+                  />
+                </div>
               </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Down Payment</label>
-              <div class="space-y-6">
-                <!-- Percentage Slider - Now Primary Input -->
-                <div class="bg-gray-50 p-4 rounded-xl">
-                  <div class="flex justify-between mb-3">
-                    <label class="text-base font-medium text-gray-700">Down Payment: ${{ formatNumber(downPayment) }}</label>
-                    <span class="text-indigo-600 font-semibold text-lg">{{ downPaymentPercentage }}%</span>
+  
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Down Payment</label>
+                <div class="space-y-6">
+                  <!-- Percentage Slider - Now Primary Input -->
+                  <div class="bg-gray-50 p-4 rounded-xl">
+                    <div class="flex justify-between mb-3">
+                      <label class="text-base font-medium text-gray-700">Down Payment: ${{ formatNumber(downPayment) }}</label>
+                      <span class="text-indigo-600 font-semibold text-lg">{{ downPaymentPercentage }}%</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      v-model="downPaymentPercentage" 
+                      min="0" 
+                      max="100" 
+                      step="1"
+                      class="slider-input w-full"
+                      @input="updateDownPaymentFromPercentage"
+                    />
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>0%</span>
+                      <span>100%</span>
+                    </div>
+  
+                    <!-- Dollar Amount Input - Now inside the same container -->
+                    <div class="mt-4 relative w-3/4 mx-auto">
+                      <span class="text-xs text-gray-500 mb-1 block">Or enter an amount:</span>
+                      <span class="absolute left-4 top-[55%] transform -translate-y-1/2 text-gray-500">$</span>
+                      <input 
+                        type="text" 
+                        :value="formatNumber(downPayment)"
+                        @input="e => {
+                          const value = parseFloat(e.target.value.replace(/[^0-9.]/g, ''))
+                          downPayment = isNaN(value) ? 0 : value
+                          validateDownPayment()
+                        }"
+                        class="w-full pl-8 pr-4 py-2 border-2 border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all duration-200 text-sm"
+                        placeholder="Enter specific amount"
+                      />
+                    </div>
+                  </div>
+  
+                  <!-- Full Down Payment Message -->
+                  <div v-if="isFullDownPayment" class="text-center p-4 bg-green-50 rounded-xl mt-4">
+                    <p class="text-green-600">
+                      Looks like you don't need a mortgage loan! 😊
+                    </p>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Sliders with Modern Design -->
+              <div class="space-y-6 mt-8">
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <label class="text-sm font-medium text-gray-700">Interest Rate</label>
+                    <span class="text-indigo-600 font-semibold">{{ interestRate }}%</span>
                   </div>
                   <input 
                     type="range" 
-                    v-model="downPaymentPercentage" 
-                    min="0" 
-                    max="100" 
-                    step="1"
+                    v-model="interestRate" 
+                    min="2" 
+                    max="14" 
+                    step="0.125"
                     class="slider-input w-full"
-                    @input="updateDownPaymentFromPercentage"
                   />
-                  <div class="flex justify-between text-xs text-gray-500 mt-2">
-                    <span>0%</span>
-                    <span>100%</span>
-                  </div>
-
-                  <!-- Dollar Amount Input - Now inside the same container -->
-                  <div class="mt-4 relative w-3/4 mx-auto">
-                    <span class="text-xs text-gray-500 mb-1 block">Or enter an amount:</span>
-                    <span class="absolute left-4 top-[55%] transform -translate-y-1/2 text-gray-500">$</span>
-                    <input 
-                      type="text" 
-                      :value="formatNumber(downPayment)"
-                      @input="e => {
-                        const value = parseFloat(e.target.value.replace(/[^0-9.]/g, ''))
-                        downPayment = isNaN(value) ? 0 : value
-                        validateDownPayment()
-                      }"
-                      class="w-full pl-8 pr-4 py-2 border-2 border-indigo-100 rounded-lg focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all duration-200 text-sm"
-                      placeholder="Enter specific amount"
-                    />
+                  <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>2%</span>
+                    <span>14%</span>
                   </div>
                 </div>
-
-                <!-- Full Down Payment Message -->
-                <div v-if="isFullDownPayment" class="text-center p-4 bg-green-50 rounded-xl mt-4">
-                  <p class="text-green-600">
-                    Looks like you don't need a mortgage loan! 😊
-                  </p>
+  
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <label class="text-sm font-medium text-gray-700">Loan Term</label>
+                    <span class="text-indigo-600 font-semibold">{{ loanTerm }} years</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    v-model="loanTerm" 
+                    min="15" 
+                    max="30" 
+                    step="5"
+                    class="slider-input w-full"
+                  />
+                  <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>15 years</span>
+                    <span>30 years</span>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <!-- Sliders with Modern Design -->
-            <div class="space-y-6 mt-8">
-              <div>
-                <div class="flex justify-between mb-2">
-                  <label class="text-sm font-medium text-gray-700">Interest Rate</label>
-                  <span class="text-indigo-600 font-semibold">{{ interestRate }}%</span>
-                </div>
-                <input 
-                  type="range" 
-                  v-model="interestRate" 
-                  min="2" 
-                  max="14" 
-                  step="0.125"
-                  class="slider-input w-full"
-                />
-                <div class="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>2%</span>
-                  <span>14%</span>
-                </div>
-              </div>
-
-              <div>
-                <div class="flex justify-between mb-2">
-                  <label class="text-sm font-medium text-gray-700">Loan Term</label>
-                  <span class="text-indigo-600 font-semibold">{{ loanTerm }} years</span>
-                </div>
-                <input 
-                  type="range" 
-                  v-model="loanTerm" 
-                  min="15" 
-                  max="30" 
-                  step="5"
-                  class="slider-input w-full"
-                />
-                <div class="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>15 years</span>
-                  <span>30 years</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Additional Costs Section -->
-            <div class="mt-8 border rounded-xl p-6 bg-gray-50">
-              <!-- Checkbox to Enable/Disable -->
-              <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    v-model="includeAdditionalCosts"
-                    id="includeCosts"
-                    class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
-                  >
-                  <label for="includeCosts" class="font-medium text-gray-700">
-                    Include Taxes & Costs Below
-                  </label>
-                </div>
-                
-                <!-- Annual/Monthly Toggle -->
-                <div v-if="includeAdditionalCosts" class="flex items-center space-x-2">
-                  <span class="text-sm text-gray-600">Enter amounts as:</span>
-                  <div class="flex bg-gray-100 rounded-lg p-1">
-                    <button 
-                      @click="costInputType = 'annual'"
-                      :class="[
-                        'px-3 py-1 rounded-md text-sm font-medium transition-all duration-200',
-                        costInputType === 'annual' 
-                          ? 'bg-white shadow text-indigo-600' 
-                          : 'text-gray-500 hover:text-gray-700'
-                      ]"
+  
+              <!-- Additional Costs Section -->
+              <div class="mt-8 border rounded-xl p-6 bg-gray-50">
+                <!-- Checkbox to Enable/Disable -->
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      v-model="includeAdditionalCosts"
+                      id="includeCosts"
+                      class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
                     >
-                      Annual
-                    </button>
-                    <button 
-                      @click="costInputType = 'monthly'"
-                      :class="[
-                        'px-3 py-1 rounded-md text-sm font-medium transition-all duration-200',
-                        costInputType === 'monthly' 
-                          ? 'bg-white shadow text-indigo-600' 
-                          : 'text-gray-500 hover:text-gray-700'
-                      ]"
-                    >
-                      Monthly
-                    </button>
+                    <label for="includeCosts" class="font-medium text-gray-700">
+                      Include Taxes & Costs Below
+                    </label>
+                  </div>
+                  
+                  <!-- Annual/Monthly Toggle -->
+                  <div v-if="includeAdditionalCosts" class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-600">Enter amounts as:</span>
+                    <div class="flex bg-gray-100 rounded-lg p-1">
+                      <button 
+                        @click="costInputType = 'annual'"
+                        :class="[
+                          'px-3 py-1 rounded-md text-sm font-medium transition-all duration-200',
+                          costInputType === 'annual' 
+                            ? 'bg-white shadow text-indigo-600' 
+                            : 'text-gray-500 hover:text-gray-700'
+                        ]"
+                      >
+                        Annual
+                      </button>
+                      <button 
+                        @click="costInputType = 'monthly'"
+                        :class="[
+                          'px-3 py-1 rounded-md text-sm font-medium transition-all duration-200',
+                          costInputType === 'monthly' 
+                            ? 'bg-white shadow text-indigo-600' 
+                            : 'text-gray-500 hover:text-gray-700'
+                        ]"
+                      >
+                        Monthly
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <!-- Rest of the additional costs content (only show if checkbox is checked) -->
-              <div v-if="includeAdditionalCosts" class="space-y-4">
-                <!-- Property Taxes -->
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-600">Property Taxes</label>
-                    <span class="text-xs text-gray-400">
-                      {{ propertyTaxType === '%' ? '(% of home value)' : (costInputType === 'annual' ? '(annually)' : '(monthly)') }}
-                    </span>
+  
+                <!-- Rest of the additional costs content (only show if checkbox is checked) -->
+                <div v-if="includeAdditionalCosts" class="space-y-4">
+                  <!-- Property Taxes -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                      <label class="text-sm text-gray-600">Property Taxes</label>
+                      <span class="text-xs text-gray-400">
+                        {{ propertyTaxType === '%' ? '(% of home value)' : (costInputType === 'annual' ? '(annually)' : '(monthly)') }}
+                      </span>
+                    </div>
+                    <div class="flex space-x-2">
+                      <input
+                        type="number"
+                        v-model="propertyTaxValue"
+                        class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        step="0.1"
+                      />
+                      <select 
+                        v-model="propertyTaxType"
+                        class="border rounded-md text-gray-700 focus:ring-indigo-500 focus:border-indigo-500"
+                      >
+                        <option value="%">%</option>
+                        <option value="$">$</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="flex space-x-2">
-                    <input
-                      type="number"
-                      v-model="propertyTaxValue"
-                      class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                      step="0.1"
-                    />
-                    <select 
-                      v-model="propertyTaxType"
-                      class="border rounded-md text-gray-700 focus:ring-indigo-500 focus:border-indigo-500"
-                    >
-                      <option value="%">%</option>
-                      <option value="$">$</option>
-                    </select>
+  
+                  <!-- Home Insurance -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                      <label class="text-sm text-gray-600">Home Insurance</label>
+                      <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
+                    </div>
+                    <div class="flex space-x-2">
+                      <input
+                        type="number"
+                        v-model="homeInsurance"
+                        class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <select class="border rounded-md text-gray-700">
+                        <option value="$">$</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-
-                <!-- Home Insurance -->
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-600">Home Insurance</label>
-                    <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
+  
+                  <!-- PMI Insurance -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                      <label class="text-sm text-gray-600">PMI Insurance</label>
+                      <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
+                    </div>
+                    <div class="flex space-x-2">
+                      <input
+                        type="number"
+                        v-model="pmiInsurance"
+                        class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <select class="border rounded-md text-gray-700">
+                        <option value="$">$</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="flex space-x-2">
-                    <input
-                      type="number"
-                      v-model="homeInsurance"
-                      class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                    <select class="border rounded-md text-gray-700">
-                      <option value="$">$</option>
-                    </select>
+  
+                  <!-- HOA Fee -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                      <label class="text-sm text-gray-600">HOA Fee</label>
+                      <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
+                    </div>
+                    <div class="flex space-x-2">
+                      <input
+                        type="number"
+                        v-model="hoaFee"
+                        class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <select class="border rounded-md text-gray-700">
+                        <option value="$">$</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-
-                <!-- PMI Insurance -->
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-600">PMI Insurance</label>
-                    <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
-                  </div>
-                  <div class="flex space-x-2">
-                    <input
-                      type="number"
-                      v-model="pmiInsurance"
-                      class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                    <select class="border rounded-md text-gray-700">
-                      <option value="$">$</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- HOA Fee -->
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-600">HOA Fee</label>
-                    <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
-                  </div>
-                  <div class="flex space-x-2">
-                    <input
-                      type="number"
-                      v-model="hoaFee"
-                      class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                    <select class="border rounded-md text-gray-700">
-                      <option value="$">$</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Other Costs -->
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-600">Other Costs</label>
-                    <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
-                  </div>
-                  <div class="flex space-x-2">
-                    <input
-                      type="number"
-                      v-model="otherCosts"
-                      class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                    <select class="border rounded-md text-gray-700">
-                      <option value="$">$</option>
-                    </select>
+  
+                  <!-- Other Costs -->
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                      <label class="text-sm text-gray-600">Other Costs</label>
+                      <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
+                    </div>
+                    <div class="flex space-x-2">
+                      <input
+                        type="number"
+                        v-model="otherCosts"
+                        class="w-24 px-2 py-1 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                      <select class="border rounded-md text-gray-700">
+                        <option value="$">$</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Results Card -->
-        <div class="lg:col-span-1">
-          <div class="bg-white rounded-2xl shadow-xl p-8 backdrop-blur-lg bg-opacity-90 sticky top-8">
-            <!-- Monthly Payment Section -->
-            <div class="text-center p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl mb-6">
-              <h3 class="text-gray-600 mb-2">Monthly Payment</h3>
-              <div class="text-4xl font-bold text-indigo-600">${{ formatNumber(monthlyPayment) }}</div>
-            </div>
-
-            <!-- Payment Breakdown -->
-            <div class="space-y-4 mb-8">
-              <h4 class="font-semibold text-gray-800 border-b pb-2">Payment Breakdown</h4>
-              <div class="flex justify-between py-3 border-b border-gray-100">
-                <span class="text-gray-600">Principal & Interest</span>
-                <span class="font-semibold text-gray-800">${{ formatNumber(baseMonthlyPayment) }}</span>
+  
+          <!-- Results Card -->
+          <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl shadow-xl p-8 backdrop-blur-lg bg-opacity-90 sticky top-8">
+              <!-- Monthly Payment Section -->
+              <div class="text-center p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl mb-6">
+                <h3 class="text-gray-600 mb-2">Monthly Payment</h3>
+                <div class="text-4xl font-bold text-indigo-600">${{ formatNumber(monthlyPayment) }}</div>
               </div>
-
-              <!-- Additional Costs (shown only when included and non-zero) -->
-              <template v-if="includeAdditionalCosts">
-                <div v-if="monthlyPropertyTax > 0" class="flex justify-between py-3 border-b border-gray-100">
-                  <span class="text-gray-600">Property Tax</span>
-                  <span class="font-semibold text-gray-800">${{ formatNumber(monthlyPropertyTax) }}</span>
+  
+              <!-- Payment Breakdown -->
+              <div class="space-y-4 mb-8">
+                <h4 class="font-semibold text-gray-800 border-b pb-2">Payment Breakdown</h4>
+                <div class="flex justify-between py-3 border-b border-gray-100">
+                  <span class="text-gray-600">Principal & Interest</span>
+                  <span class="font-semibold text-gray-800">${{ formatNumber(baseMonthlyPayment) }}</span>
                 </div>
-                <div v-if="monthlyHomeInsurance > 0" class="flex justify-between py-3 border-b border-gray-100">
-                  <span class="text-gray-600">Home Insurance</span>
-                  <span class="font-semibold text-gray-800">${{ formatNumber(monthlyHomeInsurance) }}</span>
-                </div>
-                <div v-if="monthlyPMI > 0" class="flex justify-between py-3 border-b border-gray-100">
-                  <span class="text-gray-600">PMI</span>
-                  <span class="font-semibold text-gray-800">${{ formatNumber(monthlyPMI) }}</span>
-                </div>
-                <div v-if="monthlyHOA > 0" class="flex justify-between py-3 border-b border-gray-100">
-                  <span class="text-gray-600">HOA Fee</span>
-                  <span class="font-semibold text-gray-800">${{ formatNumber(monthlyHOA) }}</span>
-                </div>
-                <div v-if="monthlyOtherCosts > 0" class="flex justify-between py-3 border-b border-gray-100">
-                  <span class="text-gray-600">Other Monthly Costs</span>
-                  <span class="font-semibold text-gray-800">${{ formatNumber(monthlyOtherCosts) }}</span>
-                </div>
-              </template>
-            </div>
-
-            <!-- Loan Summary Section -->
-            <div class="space-y-4 pt-6 border-t border-gray-200">
-              <h4 class="font-semibold text-gray-800 pb-2">Loan Summary</h4>
-              
-              <div class="flex justify-between py-3 border-b border-gray-100">
-                <span class="text-gray-600">Loan Amount</span>
-                <div class="text-right">
-                  <div class="font-semibold text-gray-800">${{ formatNumber(loanAmount) }}</div>
-                  <div class="text-sm text-gray-500">{{ loanToValue }}% of purchase price</div>
-                </div>
+  
+                <!-- Additional Costs (shown only when included and non-zero) -->
+                <template v-if="includeAdditionalCosts">
+                  <div v-if="monthlyPropertyTax > 0" class="flex justify-between py-3 border-b border-gray-100">
+                    <span class="text-gray-600">Property Tax</span>
+                    <span class="font-semibold text-gray-800">${{ formatNumber(monthlyPropertyTax) }}</span>
+                  </div>
+                  <div v-if="monthlyHomeInsurance > 0" class="flex justify-between py-3 border-b border-gray-100">
+                    <span class="text-gray-600">Home Insurance</span>
+                    <span class="font-semibold text-gray-800">${{ formatNumber(monthlyHomeInsurance) }}</span>
+                  </div>
+                  <div v-if="monthlyPMI > 0" class="flex justify-between py-3 border-b border-gray-100">
+                    <span class="text-gray-600">PMI</span>
+                    <span class="font-semibold text-gray-800">${{ formatNumber(monthlyPMI) }}</span>
+                  </div>
+                  <div v-if="monthlyHOA > 0" class="flex justify-between py-3 border-b border-gray-100">
+                    <span class="text-gray-600">HOA Fee</span>
+                    <span class="font-semibold text-gray-800">${{ formatNumber(monthlyHOA) }}</span>
+                  </div>
+                  <div v-if="monthlyOtherCosts > 0" class="flex justify-between py-3 border-b border-gray-100">
+                    <span class="text-gray-600">Other Monthly Costs</span>
+                    <span class="font-semibold text-gray-800">${{ formatNumber(monthlyOtherCosts) }}</span>
+                  </div>
+                </template>
               </div>
-              <div class="flex justify-between py-3 border-b border-gray-100">
-                <span class="text-gray-600">Total Interest</span>
-                <div class="text-right">
-                  <div class="font-semibold text-gray-800">${{ formatNumber(totalInterest) }}</div>
-                  <div class="text-sm text-gray-500">{{ totalInterestPercentage }}% of loan amount</div>
+  
+              <!-- Loan Summary Section -->
+              <div class="space-y-4 pt-6 border-t border-gray-200">
+                <h4 class="font-semibold text-gray-800 pb-2">Loan Summary</h4>
+                
+                <div class="flex justify-between py-3 border-b border-gray-100">
+                  <span class="text-gray-600">Loan Amount</span>
+                  <div class="text-right">
+                    <div class="font-semibold text-gray-800">${{ formatNumber(loanAmount) }}</div>
+                    <div class="text-sm text-gray-500">{{ loanToValue }}% of purchase price</div>
+                  </div>
                 </div>
-              </div>
-              <div class="flex justify-between py-3 border-b border-gray-100">
-                <span class="text-gray-600">Total Cost</span>
-                <div class="text-right">
-                  <div class="font-semibold text-gray-800">${{ formatNumber(totalCost) }}</div>
-                  <div class="text-sm text-gray-500">{{ totalCostPercentage }}% of purchase price</div>
+                <div class="flex justify-between py-3 border-b border-gray-100">
+                  <span class="text-gray-600">Total Interest</span>
+                  <div class="text-right">
+                    <div class="font-semibold text-gray-800">${{ formatNumber(totalInterest) }}</div>
+                    <div class="text-sm text-gray-500">{{ totalInterestPercentage }}% of loan amount</div>
+                  </div>
                 </div>
-              </div>
-
-              <!-- Move button here -->
-              <div class="pt-4">
-                <button 
-                  @click="showAmortization = true"
-                  class="w-full px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  :disabled="isFullDownPayment"
-                >
-                  Show Amortization Schedule
-                </button>
-              </div>
-
-              <div class="pt-2">
-                <button 
-                  @click="showEquityProjection = true"
-                  class="w-full px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  :disabled="isFullDownPayment"
-                >
-                  View Equity Projection
-                </button>
-              </div>
-
-              <div class="pt-2">
-                <button 
-                  @click="downloadDetailedReport"
-                  class="w-full px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  :disabled="isFullDownPayment"
-                >
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                  </svg>
-                  Download Detailed Report
-                </button>
+                <div class="flex justify-between py-3 border-b border-gray-100">
+                  <span class="text-gray-600">Total Cost</span>
+                  <div class="text-right">
+                    <div class="font-semibold text-gray-800">${{ formatNumber(totalCost) }}</div>
+                    <div class="text-sm text-gray-500">{{ totalCostPercentage }}% of purchase price</div>
+                  </div>
+                </div>
+  
+                <!-- Move button here -->
+                <div class="pt-4">
+                  <button 
+                    @click="showAmortization = true"
+                    class="w-full px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="isFullDownPayment"
+                  >
+                    Show Amortization Schedule
+                  </button>
+                </div>
+  
+                <div class="pt-2">
+                  <button 
+                    @click="showEquityProjection = true"
+                    class="w-full px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="isFullDownPayment"
+                  >
+                    View Equity Projection
+                  </button>
+                </div>
+  
+                <div class="pt-2">
+                  <button 
+                    @click="downloadDetailedReport"
+                    class="w-full px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="isFullDownPayment"
+                  >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Download Detailed Report
+                  </button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+  
     <!-- Add the Amortization Schedule Modal -->
     <div v-if="showAmortization" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] flex flex-col">
@@ -439,7 +439,7 @@
             </div>
           </div>
         </div>
-
+  
         <!-- Modal Body with Table -->
         <div class="p-6 overflow-auto">
           <table class="w-full text-sm">
@@ -467,7 +467,7 @@
         </div>
       </div>
     </div>
-
+  
     <!-- Add the Equity Projection Modal -->
     <div v-if="showEquityProjection" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] flex flex-col">
@@ -502,7 +502,7 @@
             </div>
           </div>
         </div>
-
+  
         <!-- Appreciation Rate Slider -->
         <div class="w-full max-w-3xl mx-auto bg-gray-50 p-4 rounded-xl">
           <div class="flex justify-between mb-2">
@@ -522,14 +522,14 @@
             <span>10%</span>
           </div>
         </div>
-
+  
         <!-- Modal Body with Chart and Table -->
         <div class="p-6 overflow-auto">
           <!-- Interactive Chart -->
           <div class="mb-8 bg-white rounded-xl p-6 shadow-sm">
             <canvas ref="equityChart"></canvas>
           </div>
-
+  
           <!-- Summary Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4">
@@ -558,7 +558,7 @@
               <div class="text-sm text-emerald-600">Per year</div>
             </div>
           </div>
-
+  
           <!-- Detailed Table -->
           <table class="w-full text-sm">
             <thead class="bg-gray-50">
@@ -588,320 +588,321 @@
       </div>
     </div>
   </MainLayout>
-</template>
-
-<script setup>
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+  </template>
+  
+  <script setup>
+  import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import Chart from 'chart.js/auto'
-import { jsPDF } from 'jspdf'
-import html2canvas from 'html2canvas/dist/html2canvas.js'
-
-// Input values
-const homePrice = ref(300000)
-const downPayment = ref(60000)
-const interestRate = ref(6.5)
-const loanTerm = ref(30)
-
-// Computed values
-const loanAmount = computed(() => {
-  return homePrice.value - downPayment.value
-})
-
-const monthlyRate = computed(() => {
-  return (interestRate.value / 100) / 12
-})
-
-const numberOfPayments = computed(() => {
-  return loanTerm.value * 12
-})
-
-const includeAdditionalCosts = ref(false)
-const propertyTaxValue = ref(1.2)
-const propertyTaxType = ref('%')
-const homeInsurance = ref(1500)
-const pmiInsurance = ref(0)
-const hoaFee = ref(0)
-const otherCosts = ref(4000)
-const costInputType = ref('annual')
-
-const additionalMonthlyCosts = computed(() => {
-  if (!includeAdditionalCosts.value) return 0
+  import Chart from 'chart.js/auto'
+  import { jsPDF } from 'jspdf'
+  import html2canvas from 'html2canvas/dist/html2canvas.js'
   
-  // Calculate property tax based on type
-  const annualPropertyTax = propertyTaxType.value === '%' 
-    ? (homePrice.value * propertyTaxValue.value) / 100 
-    : propertyTaxValue.value
-
-  const monthlyPropertyTax = propertyTaxType.value === '%'
-    ? annualPropertyTax / 12
-    : (costInputType.value === 'annual' ? propertyTaxValue.value / 12 : propertyTaxValue.value)
-
-  const monthlyHomeInsurance = costInputType.value === 'annual' 
-    ? homeInsurance.value / 12 
-    : homeInsurance.value
-
-  const monthlyPMIAmount = costInputType.value === 'annual' 
-    ? pmiInsurance.value / 12 
-    : pmiInsurance.value
-
-  const monthlyHOAAmount = costInputType.value === 'annual' 
-    ? hoaFee.value / 12 
-    : hoaFee.value
-
-  const monthlyOtherCostsAmount = costInputType.value === 'annual' 
-    ? otherCosts.value / 12 
-    : otherCosts.value
-
-  return monthlyPropertyTax + 
-         monthlyHomeInsurance + 
-         monthlyPMIAmount + 
-         monthlyHOAAmount + 
-         monthlyOtherCostsAmount
-})
-
-const baseMonthlyPayment = computed(() => {
-  const p = loanAmount.value
-  const r = monthlyRate.value
-  const n = numberOfPayments.value
+  // Input values
+  const homePrice = ref(300000)
+  const downPayment = ref(60000)
+  const interestRate = ref(6.5)
+  const loanTerm = ref(30)
   
-  if (r === 0) return p / n
+  // Computed values
+  const loanAmount = computed(() => {
+    return homePrice.value - downPayment.value
+  })
   
-  return (p * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)).toFixed(2)
-})
-
-const monthlyPropertyTax = computed(() => {
-  if (!includeAdditionalCosts.value) return 0
+  const monthlyRate = computed(() => {
+    return (interestRate.value / 100) / 12
+  })
   
-  if (propertyTaxType.value === '%') {
-    return (homePrice.value * propertyTaxValue.value) / 100 / 12
-  } else {
-    return costInputType.value === 'annual' 
-      ? propertyTaxValue.value / 12 
-      : propertyTaxValue.value
-  }
-})
-
-const monthlyHomeInsurance = computed(() => {
-  if (!includeAdditionalCosts.value) return 0
-  return costInputType.value === 'annual' 
-    ? homeInsurance.value / 12 
-    : homeInsurance.value
-})
-
-const monthlyPMI = computed(() => {
-  if (!includeAdditionalCosts.value) return 0
-  return costInputType.value === 'annual' 
-    ? pmiInsurance.value / 12 
-    : pmiInsurance.value
-})
-
-const monthlyHOA = computed(() => {
-  if (!includeAdditionalCosts.value) return 0
-  return costInputType.value === 'annual' 
-    ? hoaFee.value / 12 
-    : hoaFee.value
-})
-
-const monthlyOtherCosts = computed(() => {
-  if (!includeAdditionalCosts.value) return 0
-  return costInputType.value === 'annual' 
-    ? otherCosts.value / 12 
-    : otherCosts.value
-})
-
-const monthlyPayment = computed(() => {
-  return (parseFloat(baseMonthlyPayment.value) + additionalMonthlyCosts.value).toFixed(2)
-})
-
-const principalAndInterest = computed(() => {
-  return monthlyPayment.value
-})
-
-const totalLoanPayments = computed(() => {
-  // Total of all Principal & Interest payments over the loan term
-  return baseMonthlyPayment.value * numberOfPayments.value
-})
-
-const totalInterest = computed(() => {
-  // Total interest = Total of all P&I payments - Original loan amount
-  return (totalLoanPayments.value - loanAmount.value).toFixed(2)
-})
-
-const totalCost = computed(() => {
-  // Total cost = Down payment + Total of all P&I payments
-  return (downPayment.value + totalLoanPayments.value).toFixed(2)
-})
-
-const loanToValue = computed(() => {
-  return ((loanAmount.value / homePrice.value) * 100).toFixed(1)
-})
-
-const totalInterestPercentage = computed(() => {
-  // Interest as percentage of loan amount
-  return ((parseFloat(totalInterest.value) / loanAmount.value) * 100).toFixed(1)
-})
-
-const totalCostPercentage = computed(() => {
-  // Total cost as percentage of purchase price
-  return ((parseFloat(totalCost.value) / homePrice.value) * 100).toFixed(1)
-})
-
-const formatNumber = (num) => {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(parseFloat(num))
-}
-
-// Add these to your existing refs
-const showAmortization = ref(false)
-const scheduleType = ref('monthly')
-
-// Add this computed property
-const amortizationSchedule = computed(() => {
-  const schedule = []
-  let balance = loanAmount.value
-  let totalInterest = 0
-  const payment = parseFloat(baseMonthlyPayment.value)
-  const monthlyInterestRate = monthlyRate.value
+  const numberOfPayments = computed(() => {
+    return loanTerm.value * 12
+  })
   
-  if (scheduleType.value === 'monthly') {
-    for (let i = 1; i <= numberOfPayments.value; i++) {
-      const interestPayment = balance * monthlyInterestRate
-      const principalPayment = payment - interestPayment
-      totalInterest += interestPayment
-      balance -= principalPayment
-
-      schedule.push({
-        payment: i,
-        paymentAmount: Number(payment.toFixed(2)),
-        principal: Number(principalPayment.toFixed(2)),
-        interest: Number(interestPayment.toFixed(2)),
-        remainingBalance: Number(Math.max(0, balance).toFixed(2)),
-        totalInterest: Number(totalInterest.toFixed(2))
-      })
-    }
-  } else {
-    // Yearly aggregation
-    let yearlyData = {
-      paymentAmount: 0,
-      principal: 0,
-      interest: 0
-    }
+  const includeAdditionalCosts = ref(false)
+  const propertyTaxValue = ref(1.2)
+  const propertyTaxType = ref('%')
+  const homeInsurance = ref(1500)
+  const pmiInsurance = ref(0)
+  const hoaFee = ref(0)
+  const otherCosts = ref(4000)
+  const costInputType = ref('annual')
+  
+  const additionalMonthlyCosts = computed(() => {
+    if (!includeAdditionalCosts.value) return 0
     
-    for (let i = 1; i <= numberOfPayments.value; i++) {
-      const interestPayment = balance * monthlyInterestRate
-      const principalPayment = payment - interestPayment
-      totalInterest += interestPayment
-      balance -= principalPayment
-      
-      yearlyData.paymentAmount += payment
-      yearlyData.principal += principalPayment
-      yearlyData.interest += interestPayment
-
-      if (i % 12 === 0) {
+    // Calculate property tax based on type
+    const annualPropertyTax = propertyTaxType.value === '%' 
+      ? (homePrice.value * propertyTaxValue.value) / 100 
+      : propertyTaxValue.value
+  
+    const monthlyPropertyTax = propertyTaxType.value === '%'
+      ? annualPropertyTax / 12
+      : (costInputType.value === 'annual' ? propertyTaxValue.value / 12 : propertyTaxValue.value)
+  
+    const monthlyHomeInsurance = costInputType.value === 'annual' 
+      ? homeInsurance.value / 12 
+      : homeInsurance.value
+  
+    const monthlyPMIAmount = costInputType.value === 'annual' 
+      ? pmiInsurance.value / 12 
+      : pmiInsurance.value
+  
+    const monthlyHOAAmount = costInputType.value === 'annual' 
+      ? hoaFee.value / 12 
+      : hoaFee.value
+  
+    const monthlyOtherCostsAmount = costInputType.value === 'annual' 
+      ? otherCosts.value / 12 
+      : otherCosts.value
+  
+    return monthlyPropertyTax + 
+           monthlyHomeInsurance + 
+           monthlyPMIAmount + 
+           monthlyHOAAmount + 
+           monthlyOtherCostsAmount
+  })
+  
+  const baseMonthlyPayment = computed(() => {
+    const p = loanAmount.value
+    const r = monthlyRate.value
+    const n = numberOfPayments.value
+    
+    if (r === 0) return p / n
+    
+    return (p * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)).toFixed(2)
+  })
+  
+  const monthlyPropertyTax = computed(() => {
+    if (!includeAdditionalCosts.value) return 0
+    
+    if (propertyTaxType.value === '%') {
+      return (homePrice.value * propertyTaxValue.value) / 100 / 12
+    } else {
+      return costInputType.value === 'annual' 
+        ? propertyTaxValue.value / 12 
+        : propertyTaxValue.value
+    }
+  })
+  
+  const monthlyHomeInsurance = computed(() => {
+    if (!includeAdditionalCosts.value) return 0
+    return costInputType.value === 'annual' 
+      ? homeInsurance.value / 12 
+      : homeInsurance.value
+  })
+  
+  const monthlyPMI = computed(() => {
+    if (!includeAdditionalCosts.value) return 0
+    return costInputType.value === 'annual' 
+      ? pmiInsurance.value / 12 
+      : pmiInsurance.value
+  })
+  
+  const monthlyHOA = computed(() => {
+    if (!includeAdditionalCosts.value) return 0
+    return costInputType.value === 'annual' 
+      ? hoaFee.value / 12 
+      : hoaFee.value
+  })
+  
+  const monthlyOtherCosts = computed(() => {
+    if (!includeAdditionalCosts.value) return 0
+    return costInputType.value === 'annual' 
+      ? otherCosts.value / 12 
+      : otherCosts.value
+  })
+  
+  const monthlyPayment = computed(() => {
+    return (parseFloat(baseMonthlyPayment.value) + additionalMonthlyCosts.value).toFixed(2)
+  })
+  
+  const principalAndInterest = computed(() => {
+    return monthlyPayment.value
+  })
+  
+  const totalLoanPayments = computed(() => {
+    // Total of all Principal & Interest payments over the loan term
+    return baseMonthlyPayment.value * numberOfPayments.value
+  })
+  
+  const totalInterest = computed(() => {
+    // Total interest = Total of all P&I payments - Original loan amount
+    return (totalLoanPayments.value - loanAmount.value).toFixed(2)
+  })
+  
+  const totalCost = computed(() => {
+    // Total cost = Down payment + Total of all P&I payments
+    return (downPayment.value + totalLoanPayments.value).toFixed(2)
+  })
+  
+  const loanToValue = computed(() => {
+    if (homePrice.value === 0) return '0.0'
+    return ((loanAmount.value / homePrice.value) * 100).toFixed(1)
+  })
+  
+  const totalInterestPercentage = computed(() => {
+    // Interest as percentage of loan amount
+    return ((parseFloat(totalInterest.value) / loanAmount.value) * 100).toFixed(1)
+  })
+  
+  const totalCostPercentage = computed(() => {
+    // Total cost as percentage of purchase price
+    return ((parseFloat(totalCost.value) / homePrice.value) * 100).toFixed(1)
+  })
+  
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(parseFloat(num))
+  }
+  
+  // Add these to your existing refs
+  const showAmortization = ref(false)
+  const scheduleType = ref('monthly')
+  
+  // Add this computed property
+  const amortizationSchedule = computed(() => {
+    const schedule = []
+    let balance = loanAmount.value
+    let totalInterest = 0
+    const payment = parseFloat(baseMonthlyPayment.value)
+    const monthlyInterestRate = monthlyRate.value
+    
+    if (scheduleType.value === 'monthly') {
+      for (let i = 1; i <= numberOfPayments.value; i++) {
+        const interestPayment = balance * monthlyInterestRate
+        const principalPayment = payment - interestPayment
+        totalInterest += interestPayment
+        balance -= principalPayment
+  
         schedule.push({
-          payment: i / 12,
-          paymentAmount: Number(yearlyData.paymentAmount.toFixed(2)),
-          principal: Number(yearlyData.principal.toFixed(2)),
-          interest: Number(yearlyData.interest.toFixed(2)),
+          payment: i,
+          paymentAmount: Number(payment.toFixed(2)),
+          principal: Number(principalPayment.toFixed(2)),
+          interest: Number(interestPayment.toFixed(2)),
           remainingBalance: Number(Math.max(0, balance).toFixed(2)),
           totalInterest: Number(totalInterest.toFixed(2))
         })
+      }
+    } else {
+      // Yearly aggregation
+      let yearlyData = {
+        paymentAmount: 0,
+        principal: 0,
+        interest: 0
+      }
+      
+      for (let i = 1; i <= numberOfPayments.value; i++) {
+        const interestPayment = balance * monthlyInterestRate
+        const principalPayment = payment - interestPayment
+        totalInterest += interestPayment
+        balance -= principalPayment
         
-        yearlyData = {
-          paymentAmount: 0,
-          principal: 0,
-          interest: 0
+        yearlyData.paymentAmount += payment
+        yearlyData.principal += principalPayment
+        yearlyData.interest += interestPayment
+  
+        if (i % 12 === 0) {
+          schedule.push({
+            payment: i / 12,
+            paymentAmount: Number(yearlyData.paymentAmount.toFixed(2)),
+            principal: Number(yearlyData.principal.toFixed(2)),
+            interest: Number(yearlyData.interest.toFixed(2)),
+            remainingBalance: Number(Math.max(0, balance).toFixed(2)),
+            totalInterest: Number(totalInterest.toFixed(2))
+          })
+          
+          yearlyData = {
+            paymentAmount: 0,
+            principal: 0,
+            interest: 0
+          }
         }
       }
     }
-  }
-  
-  return schedule
-})
-
-// Add these new refs
-const appreciationRate = ref(3)
-const showEquityProjection = ref(false)
-
-// Add this computed property
-const equityProjection = computed(() => {
-  const projection = []
-  let currentHomeValue = homePrice.value
-  let previousEquity = downPayment.value
-  let balance = loanAmount.value
-  const payment = parseFloat(baseMonthlyPayment.value)
-  const monthlyInterestRate = monthlyRate.value
-
-  for (let year = 1; year <= loanTerm.value; year++) {
-    // Calculate loan balance at end of year
-    for (let month = 1; month <= 12; month++) {
-      const interestPayment = balance * monthlyInterestRate
-      const principalPayment = payment - interestPayment
-      balance -= principalPayment
-    }
-
-    // Calculate home value with appreciation
-    currentHomeValue *= (1 + appreciationRate.value / 100)
     
-    const equity = currentHomeValue - Math.max(0, balance)
-    const annualGrowth = equity - previousEquity
-    previousEquity = equity
-
-    projection.push({
-      year,
-      homeValue: Math.round(currentHomeValue),
-      loanBalance: Math.max(0, Math.round(balance)),
-      equity: Math.round(equity),
-      equityPercentage: ((equity / currentHomeValue) * 100).toFixed(1),
-      annualGrowth: Math.round(annualGrowth)
-    })
-  }
-
-  return projection
-})
-
-// Add these refs
-const equityChart = ref(null)
-let chart = null
-
-// Add this watch effect to update the chart when relevant values change
-watch([equityProjection, showEquityProjection], ([newProjection, showModal], [oldProjection, oldShowModal]) => {
-  if (showModal) {
-    // Add a small delay to ensure the canvas is mounted
-    setTimeout(() => {
-      if (equityChart.value) {
-        if (chart) {
-          chart.destroy()
-        }
-
-        const ctx = equityChart.value.getContext('2d')
-        chart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: newProjection.map(row => `Year ${row.year}`),
-            datasets: [
-              {
-                label: 'Home Value',
-                data: newProjection.map(row => row.homeValue),
-                borderColor: '#6366f1',
-                backgroundColor: '#6366f120',
-                fill: true
-              },
-              {
-                label: 'Loan Balance',
-                data: newProjection.map(row => row.loanBalance),
-                borderColor: '#ef4444',
-                backgroundColor: '#ef444420',
-                fill: true
-              },
-              {
-                label: 'Equity',
-                data: newProjection.map(row => row.equity),
-                borderColor: '#10b981',
-                backgroundColor: '#10b98120',
+    return schedule
+  })
+  
+  // Add these new refs
+  const appreciationRate = ref(3)
+  const showEquityProjection = ref(false)
+  
+  // Add this computed property
+  const equityProjection = computed(() => {
+    const projection = []
+    let currentHomeValue = homePrice.value
+    let previousEquity = downPayment.value
+    let balance = loanAmount.value
+    const payment = parseFloat(baseMonthlyPayment.value)
+    const monthlyInterestRate = monthlyRate.value
+  
+    for (let year = 1; year <= loanTerm.value; year++) {
+      // Calculate loan balance at end of year
+      for (let month = 1; month <= 12; month++) {
+        const interestPayment = balance * monthlyInterestRate
+        const principalPayment = payment - interestPayment
+        balance -= principalPayment
+      }
+  
+      // Calculate home value with appreciation
+      currentHomeValue *= (1 + appreciationRate.value / 100)
+      
+      const equity = currentHomeValue - Math.max(0, balance)
+      const annualGrowth = equity - previousEquity
+      previousEquity = equity
+  
+      projection.push({
+        year,
+        homeValue: Math.round(currentHomeValue),
+        loanBalance: Math.max(0, Math.round(balance)),
+        equity: Math.round(equity),
+        equityPercentage: ((equity / currentHomeValue) * 100).toFixed(1),
+        annualGrowth: Math.round(annualGrowth)
+      })
+    }
+  
+    return projection
+  })
+  
+  // Add these refs
+  const equityChart = ref(null)
+  let chart = null
+  
+  // Add this watch effect to update the chart when relevant values change
+  watch([equityProjection, showEquityProjection], ([newProjection, showModal], [oldProjection, oldShowModal]) => {
+    if (showModal) {
+      // Add a small delay to ensure the canvas is mounted
+      setTimeout(() => {
+        if (equityChart.value) {
+      if (chart) {
+        chart.destroy()
+      }
+  
+      const ctx = equityChart.value.getContext('2d')
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: newProjection.map(row => `Year ${row.year}`),
+          datasets: [
+            {
+              label: 'Home Value',
+              data: newProjection.map(row => row.homeValue),
+              borderColor: '#6366f1',
+              backgroundColor: '#6366f120',
+              fill: true
+            },
+            {
+              label: 'Loan Balance',
+              data: newProjection.map(row => row.loanBalance),
+              borderColor: '#ef4444',
+              backgroundColor: '#ef444420',
+              fill: true
+            },
+            {
+              label: 'Equity',
+              data: newProjection.map(row => row.equity),
+              borderColor: '#10b981',
+              backgroundColor: '#10b98120',
               fill: true
             }
           ]
@@ -975,20 +976,33 @@ watch([equityProjection, showEquityProjection], ([newProjection, showModal], [ol
       downPayment.value = homePrice.value
     }
     // Update percentage when dollar amount changes
-    downPaymentPercentage.value = Math.round((downPayment.value / homePrice.value) * 100)
+    if (homePrice.value === 0) {
+      downPaymentPercentage.value = 0
+    } else {
+      downPaymentPercentage.value = Math.round((downPayment.value / homePrice.value) * 100)
+    }
   }
   
   const updateDownPaymentFromPercentage = () => {
     // Update dollar amount when percentage changes
-    downPayment.value = Math.round((downPaymentPercentage.value / 100) * homePrice.value)
+    if (homePrice.value === 0) {
+      downPayment.value = 0
+    } else {
+      downPayment.value = Math.round((downPaymentPercentage.value / 100) * homePrice.value)
+    }
   }
   
   // Add watcher for home price changes
   watch(homePrice, (newValue) => {
-    // Maintain the same percentage when home price changes
-    const currentPercentage = (downPayment.value / newValue) * 100
-    downPaymentPercentage.value = Math.round(currentPercentage)
-    updateDownPaymentFromPercentage()
+    if (newValue === 0) {
+      downPayment.value = 0
+      downPaymentPercentage.value = 0
+    } else {
+      // Maintain the same percentage when home price changes
+      const currentPercentage = (downPayment.value / newValue) * 100
+      downPaymentPercentage.value = Math.round(currentPercentage)
+      updateDownPaymentFromPercentage()
+    }
   })
   
   // Add these methods
