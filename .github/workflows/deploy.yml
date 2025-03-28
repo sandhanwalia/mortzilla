@@ -2,7 +2,7 @@ name: Blue-Green Deployment to Cloud Run
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
 
 env:
