@@ -7,7 +7,6 @@
             Mortgage Calculator
           </h1>
           <p class="text-gray-600">Calculate your monthly mortgage payments and explore different scenarios</p>
-          <p class="text-xs text-gray-500 mt-1">securely hosted on Google Cloud</p>
         </div>
         
         <div class="grid lg:grid-cols-3 gap-8">
@@ -18,7 +17,18 @@
             <!-- Input Fields -->
             <div class="space-y-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Home Price</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Home Price
+                  <div class="inline-block relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                      The total purchase price of the home you want to buy
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                    </div>
+                  </div>
+                </label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                   <input 
@@ -35,7 +45,18 @@
               </div>
   
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Down Payment</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Down Payment
+                  <div class="inline-block relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                      Initial payment when buying a home. 20% or more avoids PMI insurance
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                    </div>
+                  </div>
+                </label>
                 <div class="space-y-6">
                   <!-- Percentage Slider - Now Primary Input -->
                   <div class="bg-gray-50 p-4 rounded-xl">
@@ -88,7 +109,18 @@
               <div class="space-y-6 mt-8">
                 <div>
                   <div class="flex justify-between mb-2">
-                    <label class="text-sm font-medium text-gray-700">Interest Rate</label>
+                    <label class="text-sm font-medium text-gray-700">
+                      Interest Rate
+                      <div class="inline-block relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                          Annual interest rate on your mortgage. Lower rates mean lower monthly payments
+                          <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                        </div>
+                      </div>
+                    </label>
                     <span class="text-indigo-600 font-semibold">{{ interestRate }}%</span>
                   </div>
                   <input 
@@ -107,7 +139,18 @@
   
                 <div>
                   <div class="flex justify-between mb-2">
-                    <label class="text-sm font-medium text-gray-700">Loan Term</label>
+                    <label class="text-sm font-medium text-gray-700">
+                      Loan Term
+                      <div class="inline-block relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                          Length of the loan. Longer terms have lower payments but higher total interest
+                          <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                        </div>
+                      </div>
+                    </label>
                     <span class="text-indigo-600 font-semibold">{{ loanTerm }} years</span>
                   </div>
                   <input 
@@ -127,7 +170,6 @@
   
               <!-- Additional Costs Section -->
               <div class="mt-8 border rounded-xl p-6 bg-gray-50">
-                <!-- Checkbox to Enable/Disable -->
                 <div class="flex items-center justify-between mb-6">
                   <div class="flex items-center space-x-2">
                     <input
@@ -138,6 +180,15 @@
                     >
                     <label for="includeCosts" class="font-medium text-gray-700">
                       Include Taxes & Costs Below
+                      <div class="inline-block relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                          Additional costs beyond principal and interest that affect your total monthly payment
+                          <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                        </div>
+                      </div>
                     </label>
                   </div>
                   
@@ -176,7 +227,18 @@
                   <!-- Property Taxes -->
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                      <label class="text-sm text-gray-600">Property Taxes</label>
+                      <label class="text-sm text-gray-600">
+                        Property Taxes
+                        <div class="inline-block relative group">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                            Annual property tax, typically 1-2% of home value. Can be entered as percentage or fixed amount
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          </div>
+                        </div>
+                      </label>
                       <span class="text-xs text-gray-400">
                         {{ propertyTaxType === '%' ? '(% of home value)' : (costInputType === 'annual' ? '(annually)' : '(monthly)') }}
                       </span>
@@ -201,7 +263,18 @@
                   <!-- Home Insurance -->
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                      <label class="text-sm text-gray-600">Home Insurance</label>
+                      <label class="text-sm text-gray-600">
+                        Home Insurance
+                        <div class="inline-block relative group">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                            Required insurance to protect against damage or loss. Typically $600-$2000 annually
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          </div>
+                        </div>
+                      </label>
                       <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
                     </div>
                     <div class="flex space-x-2">
@@ -219,7 +292,18 @@
                   <!-- PMI Insurance -->
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                      <label class="text-sm text-gray-600">PMI Insurance</label>
+                      <label class="text-sm text-gray-600">
+                        PMI Insurance
+                        <div class="inline-block relative group">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                            Required if down payment is less than 20%. Protects lender if you default
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          </div>
+                        </div>
+                      </label>
                       <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
                     </div>
                     <div class="flex space-x-2">
@@ -237,7 +321,18 @@
                   <!-- HOA Fee -->
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                      <label class="text-sm text-gray-600">HOA Fee</label>
+                      <label class="text-sm text-gray-600">
+                        HOA Fee
+                        <div class="inline-block relative group">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                            Homeowners Association fees for shared amenities and maintenance in some communities
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          </div>
+                        </div>
+                      </label>
                       <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
                     </div>
                     <div class="flex space-x-2">
@@ -255,7 +350,18 @@
                   <!-- Other Costs -->
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                      <label class="text-sm text-gray-600">Other Costs</label>
+                      <label class="text-sm text-gray-600">
+                        Other Costs
+                        <div class="inline-block relative group">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                            Additional expenses such as utilities, maintenance, or other regular costs
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          </div>
+                        </div>
+                      </label>
                       <span class="text-xs text-gray-400">{{ costInputType === 'annual' ? '(annually)' : '(monthly)' }}</span>
                     </div>
                     <div class="flex space-x-2">

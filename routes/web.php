@@ -25,3 +25,7 @@ Route::get('/affordability-calculator', function () {
 Route::get('/refinance-calculator', function () {
     return inertia('Index/RefinanceCalculator');
 });
+
+Route::get('/resources', function () {
+    return inertia('Index/Resources');
+});

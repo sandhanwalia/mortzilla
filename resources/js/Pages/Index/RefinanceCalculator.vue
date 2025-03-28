@@ -6,7 +6,15 @@
         <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3 leading-relaxed pb-1">
           Mortgage Refinance Calculator
         </h1>
-        <p class="text-gray-600">Calculate if refinancing your mortgage could save you money</p>
+        <div class="flex items-center justify-center space-x-2">
+          <p class="text-gray-600">Calculate if refinancing your mortgage could save you money</p>
+          <a href="/resources#refinancing" class="inline-flex items-center text-indigo-600 hover:text-indigo-700 text-sm">
+            <span>Need Help?</span>
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l0 10M7 7l6 5-6 5" />
+            </svg>
+          </a>
+        </div>
       </div>
       
       <div class="grid lg:grid-cols-3 gap-8">
@@ -18,7 +26,18 @@
           <div class="space-y-6">
             <!-- Current Loan Balance -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Current Loan Balance</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Current Loan Balance
+                <div class="inline-block relative group">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                    The remaining principal amount on your current mortgage
+                    <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                  </div>
+                </div>
+              </label>
               <div class="relative">
                 <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                 <input 
@@ -37,7 +56,18 @@
             <!-- Current Interest Rate -->
             <div>
               <div class="flex justify-between mb-2">
-                <label class="text-sm font-medium text-gray-700">Current Interest Rate</label>
+                <label class="text-sm font-medium text-gray-700">
+                  Current Interest Rate
+                  <div class="inline-block relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                      The annual interest rate on your existing mortgage
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                    </div>
+                  </div>
+                </label>
                 <span class="text-indigo-600 font-semibold">{{ currentRate }}%</span>
               </div>
               <input 
@@ -57,7 +87,18 @@
             <!-- Remaining Term -->
             <div>
               <div class="flex justify-between mb-2">
-                <label class="text-sm font-medium text-gray-700">Remaining Term</label>
+                <label class="text-sm font-medium text-gray-700">
+                  Remaining Term
+                  <div class="inline-block relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                      Number of years left to pay off your current mortgage
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                    </div>
+                  </div>
+                </label>
                 <span class="text-indigo-600 font-semibold">{{ remainingTerm }} years</span>
               </div>
               <input 
@@ -80,7 +121,18 @@
               
               <!-- Loan Type Selection -->
               <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Loan Type</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Loan Type
+                  <div class="inline-block relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                      Fixed rate maintains the same rate, while ARM rates can change after the initial period
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                    </div>
+                  </div>
+                </label>
                 <div class="space-y-4">
                   <select 
                     v-model="loanType"
@@ -93,7 +145,18 @@
                   <!-- ARM Details -->
                   <div v-if="loanType === 'arm'" class="space-y-4 p-4 bg-white rounded-xl">
                     <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-2">Initial Rate Period</label>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Initial Rate Period
+                        <div class="inline-block relative group">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                            Length of time the initial rate is fixed before adjustments begin
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          </div>
+                        </div>
+                      </label>
                       <select 
                         v-model="armInitialPeriod"
                         class="w-full py-3 border-2 border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all duration-200"
@@ -104,7 +167,18 @@
                       </select>
                     </div>
                     <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-2">Adjustment Cap</label>
+                      <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Adjustment Cap
+                        <div class="inline-block relative group">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                            Maximum rate increases allowed for first adjustment, subsequent adjustments, and over the loan's life
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          </div>
+                        </div>
+                      </label>
                       <div class="flex space-x-4">
                         <div class="flex-1">
                           <label class="text-xs text-gray-500">First Adjustment</label>
@@ -142,7 +216,18 @@
               <!-- New Interest Rate -->
               <div>
                 <div class="flex justify-between mb-2">
-                  <label class="text-sm font-medium text-gray-700">New Interest Rate</label>
+                  <label class="text-sm font-medium text-gray-700">
+                    New Interest Rate
+                    <div class="inline-block relative group">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                        The interest rate offered for your refinanced mortgage. Lower rates mean lower monthly payments
+                        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                      </div>
+                    </div>
+                  </label>
                   <span class="text-indigo-600 font-semibold">{{ newRate }}%</span>
                 </div>
                 <input 
@@ -162,7 +247,18 @@
               <!-- New Term -->
               <div class="mt-6">
                 <div class="flex justify-between mb-2">
-                  <label class="text-sm font-medium text-gray-700">New Term</label>
+                  <label class="text-sm font-medium text-gray-700">
+                    New Term
+                    <div class="inline-block relative group">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                        Length of the new loan. Longer terms have lower payments but higher total interest
+                        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                      </div>
+                    </div>
+                  </label>
                   <span class="text-indigo-600 font-semibold">{{ newTerm }} years</span>
                 </div>
                 <input 
@@ -181,7 +277,18 @@
 
               <!-- Closing Costs -->
               <div class="mt-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Closing Costs</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Closing Costs
+                  <div class="inline-block relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 inline-block ml-1 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-10">
+                      Fees associated with refinancing, typically 2-5% of the loan amount
+                      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                    </div>
+                  </div>
+                </label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                   <input 

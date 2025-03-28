@@ -1,28 +1,28 @@
 <template>
   <MainLayout>
-    <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div class="max-w-7xl mx-auto">
+    <div class="min-h-screen">
+      <div class="max-w-7xl mx-auto lg:px-8">
         <!-- Header Section -->
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3 leading-relaxed pb-1">
+        <div class="text-center mb-12 pt-4 px-4 ">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
             Financial Calculators
           </h1>
-          <p class="text-gray-600">Choose a calculator to help with your financial planning</p>
+          <p class="text-gray-600 text-lg max-w-2xl mx-auto">Choose a calculator to help with your financial planning</p>
         </div>
 
         <!-- Calculator Selection Tabs -->
-        <div class="mb-8">
+        <div class="mb-8 px-4 ">
           <div class="border-b border-gray-200">
-            <nav class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Calculators">
+            <nav class="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto scrollbar-hide" aria-label="Calculators">
               <button
                 v-for="calc in calculators"
                 :key="calc.id"
                 @click="currentCalculator = calc.id"
                 :class="[
                   currentCalculator === calc.id
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                  'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center'
+                    ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50/50',
+                  'whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center rounded-t-lg transition-all duration-200'
                 ]"
               >
                 <component :is="calc.icon" class="w-5 h-5 mr-2" />
@@ -33,24 +33,34 @@
         </div>
 
         <!-- Mobile Calculator Selector -->
-        <div class="md:hidden mb-6">
-          <select
-            v-model="currentCalculator"
-            class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-          >
-            <option
-              v-for="calc in calculators"
-              :key="calc.id"
-              :value="calc.id"
+        <div class="md:hidden mb-6 px-4 ">
+          <div class="relative">
+            <select
+              v-model="currentCalculator"
+              class="block w-full rounded-xl border-2 border-indigo-100 py-3 pl-4 pr-10 text-base focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 transition-all duration-200 bg-white shadow-sm"
             >
-              {{ calc.name }}
-            </option>
-          </select>
+              <option
+                v-for="calc in calculators"
+                :key="calc.id"
+                :value="calc.id"
+                class="py-2"
+              >
+                {{ calc.name }}
+              </option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-indigo-500">
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         <!-- Calculator Display Area -->
-        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-          <component :is="currentCalculatorComponent" />
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div >
+            <component :is="currentCalculatorComponent" />
+          </div>
         </div>
       </div>
     </div>
@@ -129,7 +139,23 @@ const currentCalculatorComponent = computed(() => {
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
 </style>
 
 
