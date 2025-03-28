@@ -113,7 +113,7 @@
             Calculators
           </Link>
           <Link 
-            href="#" 
+            href="/resources/" 
             :class="[
               'block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200',
               isActive('/resources') 
